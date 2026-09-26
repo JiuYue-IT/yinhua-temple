@@ -1,4 +1,4 @@
-# 打包项目给队友：只包含 git 已跟踪的文件，自动排除 server/.env（密钥）、target/ 等。
+﻿# 打包项目给队友：只包含 git 已跟踪的文件，自动排除 server/.env（密钥）、target/ 等。
 # 用法：在任意目录执行  powershell -File D:\minicamp-dev\server\scripts\package.ps1
 # 输出：项目上一级目录下的 minicamp-dev-<日期时间>.zip
 $ErrorActionPreference = "Stop"

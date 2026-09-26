@@ -1,4 +1,4 @@
-# 用真实 AI 连续跑 3 个不同背景，检查生成是否通过校验（需要后端已启动，且已设置 AI_* 环境变量）。
+﻿# 用真实 AI 连续跑 3 个不同背景，检查生成是否通过校验（需要后端已启动，且已设置 AI_* 环境变量）。
 # 用法：在 server 目录执行  .\scripts\try-live.ps1
 $ErrorActionPreference = "Stop"
 $base = "http://localhost:8080/api"
