@@ -17,6 +17,9 @@ app:
     model: ${AI_MODEL:}
     request-timeout-seconds: 25
     task-timeout-seconds: 30
+  preset:
+    # 预置案例的固定停顿（毫秒），页面始终标注为预置案例
+    delay-ms: 2000
   device:
     # serial | dryrun；dryrun 只记录模拟事件，health 中显示为 dryrun
     mode: ${DEVICE_MODE:dryrun}

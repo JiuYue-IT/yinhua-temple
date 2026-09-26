@@ -8,7 +8,11 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * 全部外部配置。值来自环境变量（见 application.yml），密钥不写入仓库。
  */
 @ConfigurationProperties(prefix = "app")
-public record AppProperties(Ai ai, Device device) {
+public record AppProperties(Ai ai, Device device, @DefaultValue Preset preset) {
+
+    /** 预置案例加载前的固定停顿，让「正在问签」有时间呈现；测试中设为 0。 */
+    public record Preset(@DefaultValue("2000") long delayMs) {
+    }
 
     public record Ai(
             String endpoint,

@@ -64,7 +64,12 @@
   - 预置案例在 `resources/presets/*.json`，启动时校验，不合法则启动失败
   - 契约交付：`contracts/session-example.json`、`contracts/types.ts`
   - 启动：`cd server; .\mvnw.cmd spring-boot:run`；测试：`.\mvnw.cmd test`
-- [ ] M2 会话状态机 + HTTP
+- [x] M2 会话状态机 + HTTP（2026-09-26，累计 28 个测试通过，真实服务 HTTP 全流程实测通过）
+  - 新增包：`error`（ApiException、ErrorCodes）/ `session`（SessionService）/ `device`（DeviceBridge、DryRun、DeviceConfig）
+  - `StoryProvider` 接口 + `LiveStoryProvider` 占位（一律 AI_UNAVAILABLE，M4 替换）；`PresetStoryProvider` 带 2 秒固定停顿（`app.preset.delay-ms`）
+  - 状态转换与设备事件在同一把锁内；后台任务用 generation 代号防迟到回写；30 秒总超时后中断任务
+  - `DeviceBridge.send` 约定为非阻塞（M3 串口实现需入队发送，不能在锁内等 ACK）
+  - `DEVICE_MODE=serial` 目前会启动失败并提示 M3 未实现
 - [ ] M3 串口桥接
 - [ ] M4 AI 生成
 - [ ] M5 加固与交付
