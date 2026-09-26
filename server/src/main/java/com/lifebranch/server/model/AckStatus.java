@@ -14,4 +14,9 @@ public enum AckStatus {
     public String json() {
         return name().toLowerCase();
     }
+
+    /** done / cancelled / error 为终态，之后的回执不再改变状态；unknown 可被迟到的回执更新。 */
+    public boolean isTerminal() {
+        return this == DONE || this == CANCELLED || this == ERROR;
+    }
 }

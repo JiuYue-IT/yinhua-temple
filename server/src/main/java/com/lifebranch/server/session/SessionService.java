@@ -82,6 +82,30 @@ public class SessionService {
         this.liveProvider = liveProvider;
         this.validator = validator;
         this.device = device;
+        device.onHandshake(this::restoreDeviceDisplay);
+    }
+
+    /**
+     * 设备（重新）握手后调用（桥接已先发送 RESET）：只恢复当前画面，绝不重放 DRAW（文档 04 §6.2）。
+     * ready/ending→STORY，reflecting→REFLECT，complete→RECEIPT，error→ERROR，generating 与空闲保持待机。
+     */
+    public void restoreDeviceDisplay() {
+        synchronized (lock) {
+            if (current == null) {
+                return;
+            }
+            DeviceEvent e = switch (current.status) {
+                case READY, ENDING -> DeviceEvent.STORY;
+                case REFLECTING -> DeviceEvent.REFLECT;
+                case COMPLETE -> DeviceEvent.RECEIPT;
+                case ERROR -> DeviceEvent.ERROR;
+                case GENERATING -> null;
+            };
+            if (e != null) {
+                log.info("设备重连，恢复画面 {}", e);
+                device.send(e);
+            }
+        }
     }
 
     // ------------------------------------------------------------------ 创建

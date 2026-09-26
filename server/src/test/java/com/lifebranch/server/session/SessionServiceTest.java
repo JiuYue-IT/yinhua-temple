@@ -228,6 +228,30 @@ class SessionServiceTest {
         assertThat(device.history()).containsExactly(DeviceEvent.DRAW, DeviceEvent.ERROR);
     }
 
+    // ------------------------------------------------------------ 设备重连
+
+    @Test
+    void reconnectRestoresCurrentDisplayButNeverDraw() {
+        service.restoreDeviceDisplay(); // 空闲：什么都不发
+        assertThat(device.history()).isEmpty();
+
+        live.block();
+        SessionSnapshot s = service.create(live(uuid(), LIVE_INPUT));
+        service.restoreDeviceDisplay(); // generating：保持待机，不重放 DRAW
+        assertThat(device.history()).containsExactly(DeviceEvent.DRAW);
+
+        live.release(validStory(true));
+        awaitStatus(s.id(), SessionStatus.READY);
+        device.clearHistory();
+        service.restoreDeviceDisplay();
+        service.choose(s.id(), "A");
+        service.restoreDeviceDisplay();
+        service.confirmReceipt(s.id(), new ReceiptRequest("发现", "下一步"));
+        service.restoreDeviceDisplay();
+        assertThat(device.history()).containsExactly(DeviceEvent.STORY, DeviceEvent.REFLECT, DeviceEvent.REFLECT,
+                DeviceEvent.RECEIPT, DeviceEvent.RECEIPT);
+    }
+
     // ------------------------------------------------------------ 重置隔离
 
     @Test

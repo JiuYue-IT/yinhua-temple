@@ -70,6 +70,23 @@
   - 状态转换与设备事件在同一把锁内；后台任务用 generation 代号防迟到回写；30 秒总超时后中断任务
   - `DeviceBridge.send` 约定为非阻塞（M3 串口实现需入队发送，不能在锁内等 ACK）
   - `DEVICE_MODE=serial` 目前会启动失败并提示 M3 未实现
-- [ ] M3 串口桥接
+- [x] M3 串口桥接（2026-09-26，累计 39 个测试通过；无实机，仅用模拟固件验证）
+  - `device/serial/`：SerialTransport 抽象、JSerialCommTransport（115200 8N1）、LineFramer（\n 分帧、容忍 \r\n、512 字节上限）、SerialDeviceBridge
+  - 握手：打开串口后等 hello，收不到就每 1.5 秒 ping；在线后 5 秒无输出发 ping，12 秒无输出视为离线；读写失败自动关闭并每 2 秒重连
+  - 每条命令带当前 bootId + 新 UUID；旧 bootId 回执忽略；BOOT_MISMATCH 触发重新握手
+  - ACK：1 秒无 accepted → unknown；done 超时（DRAW 5 秒，其它 2 秒）→ unknown；绝不自动重发
+  - 每次（重新）握手：先发 RESET，再由 SessionService.restoreDeviceDisplay 恢复当前画面，绝不重放 DRAW
+  - 离线时事件直接丢弃，不排队；ESP32 复位时 ROM 启动的非 JSON 输出会被忽略
+  - 启动日志会列出本机全部串口，方便找 ESP32 的 COM 号
+
+### 与硬件联调清单（ESP32 到位后）
+1. 关闭 Arduino 串口监视器（同一端口不能两个程序同时占用）。
+2. 设备管理器或后端启动日志中找到 ESP32 的 COM 号（通常显示 CP210x / CH340 / USB-SERIAL）。
+3. PowerShell：`$env:DEVICE_MODE="serial"; $env:SERIAL_PORT="COMx"; .\mvnw.cmd spring-boot:run`
+4. 日志中出现「设备握手成功」，并且 `GET /api/health` 显示 `online`，说明握手成功；随后固件应收到一次 RESET。
+5. 用预置案例走一轮：DRAW 摇一次 → STORY → A 为 REFLECT → 改 B 为 STORY → RECEIPT → reset 为 RESET。
+6. 拔掉 USB：health 变为 offline，网页继续；插回后固件只收到 RESET 和当前画面，没有 DRAW。
+7. 需要实机确认：打开串口时板卡是否复位并正常输出 hello（ESP32 自动复位电路和 DTR/RTS 相关）；若卡在下载模式或反复复位，记录现象后再调整。
+8. 固件的 ROM 启动信息、非 JSON 输出会被忽略；但调试信息请按协议包装为 `{"type":"log",...}`。
 - [ ] M4 AI 生成
 - [ ] M5 加固与交付
