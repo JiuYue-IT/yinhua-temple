@@ -89,4 +89,15 @@
 7. 需要实机确认：打开串口时板卡是否复位并正常输出 hello（ESP32 自动复位电路和 DTR/RTS 相关）；若卡在下载模式或反复复位，记录现象后再调整。
 8. 固件的 ROM 启动信息、非 JSON 输出会被忽略；但调试信息请按协议包装为 `{"type":"log",...}`。
 - [ ] M4 AI 生成
+- [x] M4 AI 生成（2026-09-26，累计 46 个测试通过；用本地假 HTTP 服务验证两种协议，**尚未用真实中转站跑过**）
+  - `AI_PROVIDER=anthropic`（默认）：官方 `anthropic-java` 2.65.0 SDK，baseUrl 指向中转站，`AI_AUTH=x-api-key|bearer`
+    - 默认模型 `claude-opus-5`；不显式设 thinking（默认自适应），`output_config.effort=low` 控制延迟
+    - `output_config.format` JSON Schema 结构化输出（`resources/ai/story-schema.json`）
+    - 服务端拒答回退 `fallbacks:"default"` + beta `server-side-fallback-2026-07-01`
+    - 先看 stop_reason：refusal → AI_UNAVAILABLE；max_tokens → AI_FORMAT_ERROR
+  - `AI_PROVIDER=openai`：Java HttpClient 调 `/v1/chat/completions`，`response_format: json_object`
+  - 两种协议都不自动重试；请求 25 秒超时 → AI_TIMEOUT；超时或重置时会取消正在等待的请求
+  - 提示词 `resources/ai/story-system-prompt.txt`，示例自动取预置案例；用户输入作为 JSON 数据放在用户消息里
+  - 日志只记录状态码、stop_reason、token 数和字段问题，不记录密钥、用户背景、模型原文
+  - 真实验证脚本：`server/scripts/try-live.ps1`（3 个不同背景）
 - [ ] M5 加固与交付

@@ -59,8 +59,9 @@ class SessionServiceTest {
     private SessionService newService(StoryProvider provider, boolean aiConfigured, int taskTimeoutSeconds)
             throws Exception {
         AppProperties props = new AppProperties(
-                new AppProperties.Ai(aiConfigured ? "http://ai" : null, aiConfigured ? "k" : null,
-                        aiConfigured ? "m" : null, 25, taskTimeoutSeconds),
+                new AppProperties.Ai(AppProperties.AiProvider.ANTHROPIC, aiConfigured ? "http://ai" : null,
+                        aiConfigured ? "k" : null, "m", "x-api-key", "low", true, true, 16000, 25,
+                        taskTimeoutSeconds),
                 new AppProperties.Device(DeviceMode.DRYRUN, null),
                 new AppProperties.Preset(0));
         StoryValidator validator = new StoryValidator();

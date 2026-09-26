@@ -12,9 +12,18 @@ spring:
 
 app:
   ai:
+    # anthropic（默认，官方 SDK）| openai（OpenAI 兼容 chat/completions）
+    provider: ${AI_PROVIDER:anthropic}
     endpoint: ${AI_ENDPOINT:}
     api-key: ${AI_API_KEY:}
-    model: ${AI_MODEL:}
+    model: ${AI_MODEL:claude-opus-5}
+    # anthropic 协议鉴权头：x-api-key | bearer（中转站要求 Authorization: Bearer 时改为 bearer）
+    auth-header: ${AI_AUTH:x-api-key}
+    # low | medium | high | xhigh | max；设为空字符串则不发送（中转站不支持时）
+    effort: ${AI_EFFORT:low}
+    structured-output: ${AI_STRUCTURED_OUTPUT:true}
+    refusal-fallback: ${AI_REFUSAL_FALLBACK:true}
+    max-tokens: 16000
     request-timeout-seconds: 25
     task-timeout-seconds: 30
   preset:

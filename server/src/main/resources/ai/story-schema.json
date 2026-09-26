@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "question", "assumptions", "opening", "decision", "options"],
+  "properties": {
+    "title": { "type": "string", "description": "签题，不超过 10 字" },
+    "question": { "type": "string", "description": "签文式反思问题，不超过 60 字" },
+    "assumptions": {
+      "type": "array",
+      "description": "1—3 个关键假设，每项不超过 60 字",
+      "items": { "type": "string" }
+    },
+    "opening": { "type": "string", "description": "未选之路的开场，不超过 180 字" },
+    "decision": { "type": "string", "description": "后续决策节点，不超过 60 字" },
+    "options": {
+      "type": "array",
+      "description": "恰好两项，id 依次为 A、B",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "outcome", "reflection", "receiptDraft"],
+        "properties": {
+          "id": { "type": "string", "enum": ["A", "B"] },
+          "label": { "type": "string", "description": "不超过 30 字" },
+          "outcome": { "type": "string", "description": "可能的后续，不超过 180 字" },
+          "reflection": {
+            "description": "只有行动与目标冲突、依赖未确认事实或代价大且难撤回时才给出，否则为 null",
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["goal", "concern", "alternative"],
+                "properties": {
+                  "goal": { "type": "string", "description": "不超过 90 字" },
+                  "concern": { "type": "string", "description": "不超过 90 字" },
+                  "alternative": { "type": "string", "description": "不超过 90 字" }
+                }
+              },
+              { "type": "null" }
+            ]
+          },
+          "receiptDraft": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["insight", "nextStep"],
+            "properties": {
+              "insight": { "type": "string", "description": "不超过 90 字" },
+              "nextStep": { "type": "string", "description": "不超过 90 字" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

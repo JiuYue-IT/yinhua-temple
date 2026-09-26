@@ -18,6 +18,7 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jserialcomm.version>2.11.4</jserialcomm.version>
+		<anthropic.version>2.65.0</anthropic.version>
 	</properties>
 
 	<dependencies>
@@ -33,6 +34,11 @@
 			<groupId>com.fazecast</groupId>
 			<artifactId>jSerialComm</artifactId>
 			<version>${jserialcomm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.anthropic</groupId>
+			<artifactId>anthropic-java</artifactId>
+			<version>${anthropic.version}</version>
 		</dependency>
 
 		<dependency>
