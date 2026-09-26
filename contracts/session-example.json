@@ -1,0 +1,141 @@
+{
+  "_comment": "人生支线 HTTP 契约示例。字段以 docs/04-软工B-后端AI与接口契约.md 为准，本文件为可直接对照的样例；以 _ 开头的键仅为说明，接口不会返回。",
+
+  "health": {
+    "service": "ok",
+    "aiConfigured": true,
+    "device": {
+      "mode": "serial",
+      "status": "online",
+      "lastEvent": "DRAW",
+      "lastAck": "done"
+    }
+  },
+
+  "createLiveRequest": {
+    "requestId": "e7f98ed7-5224-4285-a991-647189bd8b02",
+    "mode": "live",
+    "input": {
+      "background": "朋友邀请我参加两天项目，我担心能力不足，每天只能投入两小时。",
+      "chosenPath": "拒绝邀请",
+      "unchosenPath": "接受邀请，负责一个小模块",
+      "priority": "希望参与合作，也不想耽误队友"
+    }
+  },
+
+  "createPresetRequest": {
+    "requestId": "ca8a6bde-f26a-4b43-83a1-ac0d9d864b54",
+    "mode": "preset",
+    "caseId": "team-project"
+  },
+
+  "snapshotGenerating": {
+    "id": "s-001",
+    "mode": "live",
+    "status": "generating",
+    "input": {
+      "background": "朋友邀请我参加两天项目，我担心能力不足，每天只能投入两小时。",
+      "chosenPath": "拒绝邀请",
+      "unchosenPath": "接受邀请，负责一个小模块",
+      "priority": "希望参与合作，也不想耽误队友"
+    },
+    "story": null,
+    "selectedOptionId": null,
+    "receipt": null,
+    "error": null
+  },
+
+  "snapshotReflecting": {
+    "id": "s-001",
+    "mode": "preset",
+    "status": "reflecting",
+    "input": {
+      "background": "朋友邀请我参加两天项目，我担心能力不足，每天只能投入两小时。",
+      "chosenPath": "拒绝邀请",
+      "unchosenPath": "接受邀请，负责一个小模块",
+      "priority": "希望参与合作，也不想耽误队友"
+    },
+    "story": {
+      "title": "同行",
+      "question": "你担心做不好，还是担心别人看见你暂时做不好？",
+      "assumptions": [
+        "假设朋友仍愿意与你协商分工",
+        "每天可投入的时间仍然只有两小时"
+      ],
+      "opening": "在这条未选道路里，你接受了邀请，负责一个小模块。第一天，你发现其中一个功能超出了自己的经验。",
+      "decision": "下一次进度同步前，你会怎么做？",
+      "options": [
+        {
+          "id": "A",
+          "label": "先隐瞒进度，继续自己想办法",
+          "outcome": "你又花了一段时间尝试。问题可能仍然没有解决，而队友还按原计划等待你的结果，后续调整的时间变得更少。",
+          "reflection": {
+            "goal": "你希望参与合作，也不耽误队友。",
+            "concern": "持续隐瞒进度，可能让队友更难调整安排。",
+            "alternative": "说明卡点，并提出一个在两小时内可以完成的小任务。"
+          },
+          "receiptDraft": {
+            "insight": "独自承担所有困难，可能没有给合作留下调整的空间。",
+            "nextStep": "如果仍想参与，询问朋友是否有边界清楚的小任务。"
+          }
+        },
+        {
+          "id": "B",
+          "label": "说明困难，协商缩小负责范围",
+          "outcome": "你说明了时间和能力限制。朋友可能调整分工，也可能认为这次安排不合适，但双方能更早知道彼此的条件。",
+          "reflection": null,
+          "receiptDraft": {
+            "insight": "接受邀请后，仍然可以尝试协商自己的角色。",
+            "nextStep": "向朋友询问一个适合当前能力与时间的小任务。"
+          }
+        }
+      ]
+    },
+    "selectedOptionId": "A",
+    "receipt": null,
+    "error": null
+  },
+
+  "choiceRequest": { "optionId": "B" },
+
+  "receiptRequest": {
+    "insight": "接受邀请后，仍然可以尝试协商自己的角色。",
+    "nextStep": "向朋友询问一个适合当前能力与时间的小任务。"
+  },
+
+  "snapshotCompleteReceipt": {
+    "sessionId": "s-001",
+    "createdAt": "2026-09-26T10:00:00Z",
+    "mode": "preset",
+    "chosenPath": "拒绝邀请",
+    "unchosenPath": "接受邀请，负责一个小模块",
+    "assumptions": [
+      "假设朋友仍愿意与你协商分工",
+      "每天可投入的时间仍然只有两小时"
+    ],
+    "insight": "接受邀请后，仍然可以尝试协商自己的角色。",
+    "nextStep": "向朋友询问一个适合当前能力与时间的小任务。"
+  },
+
+  "snapshotError": {
+    "id": "s-002",
+    "mode": "live",
+    "status": "error",
+    "input": {
+      "background": "……",
+      "chosenPath": "……",
+      "unchosenPath": "……",
+      "priority": "……"
+    },
+    "story": null,
+    "selectedOptionId": null,
+    "receipt": null,
+    "error": { "code": "AI_TIMEOUT", "message": "生成超时，请重试或选择预置案例。" }
+  },
+
+  "resetResponse": { "ok": true },
+
+  "httpError": {
+    "error": { "code": "VALIDATION_ERROR", "message": "请填写未选择的道路（最多 100 字）。" }
+  }
+}

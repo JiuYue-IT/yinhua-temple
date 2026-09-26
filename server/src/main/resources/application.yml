@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: life-branch-server
+  jackson:
+    # 快照中的 null 字段（story / receipt / error 等）必须保留输出
+    default-property-inclusion: always
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  ai:
+    endpoint: ${AI_ENDPOINT:}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:}
+    request-timeout-seconds: 25
+    task-timeout-seconds: 30
+  device:
+    # serial | dryrun；dryrun 只记录模拟事件，health 中显示为 dryrun
+    mode: ${DEVICE_MODE:dryrun}
+    serial-port: ${SERIAL_PORT:}
