@@ -100,4 +100,9 @@
   - 提示词 `resources/ai/story-system-prompt.txt`，示例自动取预置案例；用户输入作为 JSON 数据放在用户消息里
   - 日志只记录状态码、stop_reason、token 数和字段问题，不记录密钥、用户背景、模型原文
   - 真实验证脚本：`server/scripts/try-live.ps1`（3 个不同背景）
+  - **真实中转站验证（2026-09-26）**：`claude-opus-5` 在该中转站对任何请求（包括「写一句秋天的诗」）都返回 refusal，不可用；
+    换成 `claude-opus-4-8` 后 3 个背景全部生成成功并通过校验，每次约 18—19 秒；`claude-sonnet-5` 约 16 秒，也全部通过
+    - 当前 `.env` 使用 `claude-opus-4-8`、effort=low、结构化输出开、回退开
+    - 人工检查：三个故事都从未选道路出发，遵守「每天两小时」等限制，结局都带条件表达；回望各只出现在一个选项上且有依据
+    - 注意：生成约 19 秒，离 30 秒总时限余量不大；现场网络差时可换 sonnet-5 或把 `app.ai.task-timeout-seconds` 调高
 - [ ] M5 加固与交付

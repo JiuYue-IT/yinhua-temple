@@ -129,8 +129,9 @@ public class AnthropicStoryProvider implements StoryProvider, AutoCloseable {
         log.info("AI 返回：model={} stop={} input_tokens={} output_tokens={}", msg.model().asString(),
                 stop == null ? "null" : stop.asString(), msg.usage().inputTokens(), msg.usage().outputTokens());
         if (StopReason.REFUSAL.equals(stop)) {
-            log.warn("AI 拒绝了本次请求（refusal），category={}",
-                    msg.stopDetails().map(d -> String.valueOf(d.category())).orElse("?"));
+            log.warn("AI 拒绝了本次请求（refusal），category={}。若换任何输入都被拒绝，多半是中转站上该模型不可用，"
+                            + "请改 AI_MODEL（例如 claude-opus-4-8）",
+                    msg.stopDetails().flatMap(d -> d.category()).map(Object::toString).orElse("?"));
             throw StoryGenerationException.unavailable();
         }
         if (StopReason.MAX_TOKENS.equals(stop)) {
