@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: life-branch-server
+  config:
+    # 自动读取 server/.env（KEY=VALUE，不提交到 git）；同名系统环境变量优先。测试中通过 LB_ENV_FILE 关闭
+    import: optional:file:${LB_ENV_FILE:.env}[.properties]
   jackson:
     # 快照中的 null 字段（story / receipt / error 等）必须保留输出
     default-property-inclusion: always
