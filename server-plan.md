@@ -105,4 +105,9 @@
     - 当前 `.env` 使用 `claude-opus-4-8`、effort=low、结构化输出开、回退开
     - 人工检查：三个故事都从未选道路出发，遵守「每天两小时」等限制，结局都带条件表达；回望各只出现在一个选项上且有依据
     - 注意：生成约 19 秒，离 30 秒总时限余量不大；现场网络差时可换 sonnet-5 或把 `app.ai.task-timeout-seconds` 调高
-- [ ] M5 加固与交付
+- [x] M5 加固与交付（2026-09-26，累计 51 个测试通过）
+  - 后端托管 `../web/dist/`（`WEB_DIST` 可改），单端口演示；本机 CORS（`localhost:*`）
+  - 启动摘要：打印接口地址、AI、设备、网页托管情况
+  - 新增 EdgeCasesTest：托管首页、CORS、live 失败 → error → reset → 预置、码点边界、未知路径 JSON 错误
+  - 交付文档：`server/README.md`（启动、配置、常见问题、检查记录、已知限制）、`docs/05-后端交接-给前端.md`
+  - 打包脚本：`server/scripts/package.ps1`（git archive，排除 .env）

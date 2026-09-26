@@ -12,8 +12,15 @@ spring:
     default-property-inclusion: always
     serialization:
       write-dates-as-timestamps: false
+  web:
+    resources:
+      # 前端 npm run build 生成 web/dist 后，由后端在 http://localhost:8080/ 直接托管（单端口演示）
+      static-locations: classpath:/static/,file:${app.web.dist}
 
 app:
+  web:
+    # 相对于启动目录 server/；也可用环境变量 WEB_DIST 指定绝对路径（以 / 结尾）
+    dist: ${WEB_DIST:../web/dist/}
   ai:
     # anthropic（默认，官方 SDK）| openai（OpenAI 兼容 chat/completions）
     provider: ${AI_PROVIDER:anthropic}
