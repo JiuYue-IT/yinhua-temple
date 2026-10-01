@@ -336,12 +336,14 @@ class SessionServiceTest {
     @Test
     void resetExpiresOldRequestIdAndNeverDraws() {
         String id = uuid();
-        service.create(preset(id));
+        SessionSnapshot created = service.create(preset(id));
+        awaitStatus(created.id(), SessionStatus.READY);
+        device.clearHistory(); // 只检查 reset 的事件，不依赖异步生成与 reset 的先后顺序。
         service.reset();
         service.reset();
         assertCode(() -> service.create(preset(id)), ErrorCodes.REQUEST_EXPIRED);
         assertThat(service.currentSnapshot()).isNull();
-        assertThat(device.history()).containsExactly(DeviceEvent.DRAW, DeviceEvent.RESET, DeviceEvent.RESET);
+        assertThat(device.history()).containsExactly(DeviceEvent.RESET, DeviceEvent.RESET);
     }
 
     // ------------------------------------------------------------ 工具

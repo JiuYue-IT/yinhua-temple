@@ -17,9 +17,9 @@ Copy-Item config.example.env .env
 
 ## 分支和 Pull Request
 
-有写权限的成员创建自己的分支，例如 `feat/cursor-performance` 或 `fix/poem-overlap`，通过 Pull Request 合并。外部贡献者可先 Fork。建议开启主分支保护，要求至少一人审核且后端测试通过。
+日常开发先更新 `develop`，再创建自己的分支，例如 `feat/cursor-performance` 或 `fix/poem-overlap`。完成修改后推送该分支，创建以 `develop` 为目标的 Pull Request，检查通过且没有未解决问题后合并。`main` 用于稳定版本，通过 `develop` → `main` 的 PR 更新。具体命令、页面操作、成员权限与冲突处理见 [仓库操作指南](docs/仓库操作指南.md)。外部贡献者可先 Fork。
 
-PR 说明需包含修改目的、实际影响、验证方式，以及尚未验证的内容。视觉修改附修改前后截图，并检查桌面和手机尺寸。现有待解决问题见 [性能与视觉方案](docs/10-AI连接修复与前端性能优化方案.md)。
+PR 说明需包含修改目的、实际影响、验证方式，以及尚未验证的内容。视觉修改附修改前后截图，并检查桌面和手机尺寸。现有待解决问题见 [待办](docs/10-待办.md)。
 
 ## 验证
 
