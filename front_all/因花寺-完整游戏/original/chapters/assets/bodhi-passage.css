@@ -1,0 +1,25 @@
+.bodhi-next {
+  display: inline-flex; align-items: center; justify-content: center; gap: 20px;
+  margin-top: 29px; min-height: 48px; padding: 12px 24px;
+  border: 1px solid rgba(232,199,128,.62); border-radius: 28px;
+  background: rgba(131,65,27,.28); color: #fff0c9;
+  font: 14px/1.6 "Noto Serif SC","Songti SC",serif; letter-spacing: .16em;
+  text-decoration: none; transition: background .25s, box-shadow .25s;
+}
+.bodhi-next:hover,.bodhi-next:focus-visible { background: rgba(164,105,48,.42); box-shadow: 0 0 25px #e8c78020; outline: 1px solid #e8c780; outline-offset: 5px; }
+.bodhi-next svg { width: 26px; height: 30px; }
+.bodhi-passage { position: fixed; inset: 0; z-index: 200; overflow: hidden; isolation: isolate; color: #f5ecd8; }
+.bodhi-passage [aria-hidden] { pointer-events: none; }
+.bodhi-passage-shade,.bodhi-passage-light { position: absolute; inset: 0; opacity: 0; }
+.bodhi-passage-shade { background: radial-gradient(ellipse at 50% 42%,#35291ff8,#160f0c); }
+.bodhi-passage-light { z-index: 3; background: #e9f3ed; }
+.bodhi-passage-paper { position: absolute; z-index: 1; left: calc(50% - 48px); top: calc(45% - 78px); width: 96px; height: 156px; display: grid; place-items: center; opacity: 0; background: linear-gradient(120deg,#fff7df,#e4d3af); border: 1px solid #b99b60; box-shadow: 0 15px 50px #0d07095c,inset 0 0 0 5px #fff8e630; color: #63462b; font: 25px/1.8 "Songti SC",serif; }
+.bodhi-passage-paper span { writing-mode: vertical-rl; letter-spacing: .4em; padding-top: .4em; }
+.bodhi-passage-leaf { position: absolute; z-index: 2; left: calc(50% - 52px); top: calc(45% - 72px); width: 104px; height: 144px; opacity: 0; filter: drop-shadow(0 0 18px #e8c78066); }
+.bodhi-passage-copy { position: absolute; z-index: 2; left: 20px; right: 20px; top: 64%; margin: 0; text-align: center; font: 17px/2 "Noto Serif SC","Songti SC",serif; letter-spacing: .25em; opacity: 0; }
+.bodhi-passage-skip { position: absolute; z-index: 4; right: max(24px,env(safe-area-inset-right)); bottom: max(24px,env(safe-area-inset-bottom)); padding: 10px 17px; border: 1px solid #e8c78050; border-radius: 25px; background: #26151160; color: #f5ecd8; font: 12px/1.5 "Songti SC",serif; letter-spacing: .14em; text-decoration: none; cursor: pointer; }
+.bodhi-passage-skip:focus-visible { outline: 2px solid #e8c780; outline-offset: 4px; }
+.bodhi-passage.incoming .bodhi-passage-light { opacity: 1; }
+.bodhi-passage.incoming .bodhi-passage-leaf { z-index: 4; }
+.bodhi-passage.outgoing .bodhi-passage-leaf { z-index: 4; }
+@media(max-width:640px) { .bodhi-passage-copy { font-size: 15px; } .bodhi-next { margin-top: 25px; } }

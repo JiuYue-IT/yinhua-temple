@@ -1,0 +1,24 @@
+{
+  "type": "object", "additionalProperties": false, "required": ["summary", "detail"],
+  "properties": {
+    "summary": {
+      "type": "object", "additionalProperties": false, "required": ["title", "verse", "message"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1, "maxLength": 20},
+        "verse": {"type": "string", "minLength": 1, "maxLength": 60},
+        "message": {"type": "string", "minLength": 1, "maxLength": 100}
+      }
+    },
+    "detail": {
+      "type": "object", "additionalProperties": false,
+      "required": ["understanding", "possibility", "suggestion", "nextStep", "basis"],
+      "properties": {
+        "understanding": {"type": "string", "minLength": 1, "maxLength": 300},
+        "possibility": {"type": "string", "minLength": 1, "maxLength": 300},
+        "suggestion": {"type": "string", "minLength": 1, "maxLength": 300},
+        "nextStep": {"type": "string", "minLength": 1, "maxLength": 150},
+        "basis": {"type": "string", "minLength": 1, "maxLength": 200}
+      }
+    }
+  }
+}

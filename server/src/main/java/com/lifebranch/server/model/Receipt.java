@@ -15,5 +15,12 @@ public record Receipt(
         String unchosenPath,
         List<String> assumptions,
         String insight,
-        String nextStep) {
+        String nextStep,
+        ExperienceMode experience,
+        String concern) {
+    public Receipt(String sessionId, Instant createdAt, SessionMode mode, String chosenPath,
+                   String unchosenPath, List<String> assumptions, String insight, String nextStep) {
+        this(sessionId, createdAt, mode, chosenPath, unchosenPath, assumptions, insight, nextStep,
+                ExperienceMode.EXPLORE, null);
+    }
 }

@@ -28,7 +28,7 @@ import java.util.Map;
  * </ul>
  */
 @Component
-public class StoryPrompt {
+public class StoryPrompt implements AiPrompt<Story> {
 
     private static final Logger log = LoggerFactory.getLogger(StoryPrompt.class);
 

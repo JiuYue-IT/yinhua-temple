@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>人生支线 · 后端接口联调页</title>
+<style>
+  body { font: 14px/1.6 system-ui, "Microsoft YaHei", sans-serif; margin: 0; background: #f4f1ea; color: #222; }
+  header { padding: 12px 20px; background: #2b2520; color: #f4f1ea; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  header input { width: 260px; padding: 4px 6px; }
+  main { display: grid; grid-template-columns: 380px 1fr; gap: 16px; padding: 16px 20px; }
+  section { background: #fff; border-radius: 8px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  h2 { font-size: 15px; margin: 0 0 10px; }
+  label { display: block; margin: 6px 0 2px; color: #555; }
+  textarea, input[type=text] { width: 100%; box-sizing: border-box; padding: 6px; font: inherit; }
+  textarea { min-height: 54px; }
+  button { margin: 4px 4px 4px 0; padding: 6px 12px; font: inherit; cursor: pointer; border: 1px solid #8a7a66; background: #efe7d8; border-radius: 4px; }
+  button:disabled { opacity: .45; cursor: default; }
+  button.primary { background: #8a2e1f; color: #fff; border-color: #8a2e1f; }
+  #status { font-size: 22px; font-weight: 600; }
+  #status.err { color: #b0281a; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; background: #e6dfd2; font-size: 12px; margin-left: 6px; }
+  pre { background: #1e1b18; color: #e8e2d6; padding: 10px; border-radius: 6px; overflow: auto; max-height: 420px; font-size: 12px; }
+  .log { max-height: 220px; overflow: auto; font-size: 12px; font-family: ui-monospace, Consolas, monospace; background: #faf7f0; padding: 8px; border-radius: 6px; }
+  .log div { border-bottom: 1px dashed #ddd; padding: 2px 0; }
+  .story h3 { margin: 12px 0 4px; font-size: 14px; }
+  .opt { border: 1px solid #d8cfc0; border-radius: 6px; padding: 8px 10px; margin: 6px 0; }
+  .opt.sel { border-color: #8a2e1f; background: #fff7f3; }
+  .sign { background: #fdf9ee; border-left: 3px solid #c9a04a; padding: 8px 12px; margin-top: 8px; }
+  .sign b { display: inline-block; width: 4em; color: #7a5a1a; }
+</style>
+</head>
+<body>
+<header>
+  <strong>人生支线 · 接口联调</strong>
+  <span>后端地址 <input id="base" type="text" placeholder="留空 = 当前页面所在地址"></span>
+  <span id="health">health: —</span>
+  <button onclick="health()">刷新 health</button>
+</header>
+<main>
+  <section>
+    <h2>1. 创建会话</h2>
+    <label>模式</label>
+    <label><input type="radio" name="mode" value="preset" checked> 预置案例 team-project（约 2 秒）</label>
+    <label><input type="radio" name="mode" value="live"> 真实 AI（约 35—45 秒，需要 aiConfigured）</label>
+    <div id="liveInputs" style="display:none">
+      <label>background（≤400）</label><textarea id="background">大三，拿到了外地一家公司的实习 offer，但家里希望我留在本地考研，我自己也没想清楚。</textarea>
+      <label>chosenPath 现实中已选（≤100）</label><input id="chosenPath" type="text" value="留在本地准备考研">
+      <label>unchosenPath 未选（≤100）</label><input id="unchosenPath" type="text" value="去外地实习三个月">
+      <label>priority 在意的目标（≤150）</label><input id="priority" type="text" value="想更清楚自己适合什么工作">
+    </div>
+    <button class="primary" id="btnCreate" onclick="create()">POST /api/sessions</button>
+    <button onclick="reset()">POST /api/reset</button>
+
+    <h2 style="margin-top:18px">2. 流程操作</h2>
+    <button id="btnA" onclick="choose('A')" disabled>选 A</button>
+    <button id="btnB" onclick="choose('B')" disabled>选 B</button>
+    <button id="btnSign" onclick="sign()" disabled>主殿抛签 /sign</button>
+    <div>
+      <label>收据 insight / nextStep（各 ≤200，默认取选中项草稿）</label>
+      <input id="insight" type="text"><input id="nextStep" type="text" style="margin-top:4px">
+      <button id="btnReceipt" onclick="receipt()" disabled>确认收据 /receipt</button>
+    </div>
+
+    <h2 style="margin-top:18px">请求日志</h2>
+    <div class="log" id="log"></div>
+  </section>
+
+  <section>
+    <div>当前状态：<span id="status">—</span><span class="tag" id="sid"></span><span class="tag" id="elapsed"></span></div>
+    <div id="story" class="story"></div>
+    <h2 style="margin-top:14px">最新快照 JSON</h2>
+    <pre id="raw">（还没有会话）</pre>
+  </section>
+</main>
+
+<script>
+// ---------- 最小客户端：前端可以直接照抄这一段 ----------
+const api = {
+  // 留空则同源（页面由后端托管在 http://localhost:8080/playground.html 时不需要 CORS）
+  base: () => (document.getElementById('base').value.trim() || location.origin).replace(/\/+$/, ''),
+  async call(path, method = 'GET', body) {
+    const t0 = performance.now();
+    const res = await fetch(api.base() + path, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const json = await res.json().catch(() => null);
+    logLine(`${method} ${path} → ${res.status} (${Math.round(performance.now() - t0)}ms)` + (json?.error ? `  ${json.error.code}: ${json.error.message}` : ''));
+    if (!res.ok) throw Object.assign(new Error(json?.error?.message || res.statusText), { code: json?.error?.code, status: res.status });
+    return json;
+  },
+};
+
+let snapshot = null, pollTimer = null, t0 = 0;
+
+async function health() {
+  try {
+    const h = await api.call('/api/health');
+    document.getElementById('health').textContent =
+      `health: aiConfigured=${h.aiConfigured} · device=${h.device.mode}/${h.device.status} · lastEvent=${h.device.lastEvent ?? '-'}`;
+  } catch (e) { document.getElementById('health').textContent = 'health: 连不上后端（' + e.message + '）'; }
+}
+
+async function create() {
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  const body = mode === 'preset'
+    ? { requestId: crypto.randomUUID(), mode, caseId: 'team-project' }
+    : { requestId: crypto.randomUUID(), mode, input: {
+        background: v('background'), chosenPath: v('chosenPath'), unchosenPath: v('unchosenPath'), priority: v('priority') } };
+  t0 = performance.now();
+  try { render(await api.call('/api/sessions', 'POST', body)); startPolling(); }
+  catch (e) { showError(e); }
+}
+
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(async () => {
+    if (!snapshot) return stopPolling();
+    try {
+      const s = await api.call('/api/sessions/' + snapshot.id);
+      render(s);
+      if (s.status !== 'generating' && s.status !== 'sign_drawing') stopPolling();
+    } catch (e) { showError(e); stopPolling(); }
+  }, 1000);
+}
+function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
+
+async function choose(optionId) {
+  try { render(await api.call(`/api/sessions/${snapshot.id}/choice`, 'POST', { optionId })); } catch (e) { showError(e); }
+}
+async function sign() {
+  try { render(await api.call(`/api/sessions/${snapshot.id}/sign`, 'POST')); startPolling(); } catch (e) { showError(e); }
+}
+async function receipt() {
+  try { render(await api.call(`/api/sessions/${snapshot.id}/receipt`, 'POST', { insight: v('insight'), nextStep: v('nextStep') })); }
+  catch (e) { showError(e); }
+}
+async function reset() {
+  stopPolling();
+  try { await api.call('/api/reset', 'POST'); } catch (e) { showError(e); }
+  snapshot = null; render(null); health();
+}
+
+// ---------- 渲染 ----------
+function render(s) {
+  snapshot = s;
+  const st = document.getElementById('status');
+  st.textContent = s ? s.status : '—';
+  st.className = s?.status === 'error' ? 'err' : '';
+  document.getElementById('sid').textContent = s ? s.id : '';
+  document.getElementById('elapsed').textContent = s && t0 ? `${((performance.now() - t0) / 1000).toFixed(1)}s` : '';
+  document.getElementById('raw').textContent = s ? JSON.stringify(s, null, 2) : '（还没有会话）';
+
+  const canChoose = s && ['ready', 'reflecting', 'ending'].includes(s.status);
+  document.getElementById('btnA').disabled = !canChoose;
+  document.getElementById('btnB').disabled = !canChoose;
+  document.getElementById('btnSign').disabled = !(s && ['reflecting', 'ending'].includes(s.status));
+  document.getElementById('btnReceipt').disabled = !(s && ['reflecting', 'ending', 'sign_ready'].includes(s.status));
+  document.getElementById('btnCreate').disabled = !!s && s.status !== 'complete' && s.status !== 'error';
+
+  const box = document.getElementById('story');
+  if (!s) { box.innerHTML = ''; return; }
+  if (s.status === 'error') { box.innerHTML = `<p style="color:#b0281a">${s.error.code}：${esc(s.error.message)}</p>`; return; }
+  if (!s.story) { box.innerHTML = '<p>生成中…（预置约 2 秒，真实 AI 约 35—45 秒）</p>'; return; }
+  const st2 = s.story;
+  let html = `<h3>${esc(st2.title)} <small>· ${esc(st2.question)}</small></h3>
+    <p><i>假设：</i>${st2.assumptions.map(esc).join('；')}</p><p>${esc(st2.opening)}</p><p><b>${esc(st2.decision)}</b></p>`;
+  for (const o of st2.options) {
+    const sel = o.id === s.selectedOptionId;
+    html += `<div class="opt${sel ? ' sel' : ''}"><b>[${o.id}] ${esc(o.label)}</b>`;
+    if (sel) {
+      html += `<p>${esc(o.outcome)}</p>`;
+      if (o.reflection) html += `<p style="color:#7a5a1a">回望 · 你原本想要：${esc(o.reflection.goal)}<br>这一步可能带来：${esc(o.reflection.concern)}<br>还有一种走法：${esc(o.reflection.alternative)}</p>`;
+      document.getElementById('insight').value = o.receiptDraft.insight;
+      document.getElementById('nextStep').value = o.receiptDraft.nextStep;
+    }
+    html += '</div>';
+  }
+  if (s.sign) {
+    const g = s.sign;
+    html += `<div class="sign"><b>签题</b>${esc(g.title)}<br><b>签面</b>${esc(g.verse)}<br><b>预演</b>${esc(g.preview)}<br><b>补救</b>${esc(g.remedy)}<br><b>规劝</b>${esc(g.counsel)}<br><b>一步</b>${esc(g.nextStep)}<br><b>依据</b>${esc(g.basis)}</div>`;
+  } else if (s.status === 'sign_drawing') {
+    html += '<div class="sign">签正在落下…</div>';
+  }
+  if (s.receipt) html += `<p style="color:#2f6b3a">✔ 收据已确认：${esc(s.receipt.insight)} / ${esc(s.receipt.nextStep)}（${s.receipt.createdAt}）</p>`;
+  box.innerHTML = html;
+}
+function showError(e) { logLine('!! ' + (e.code ? e.code + ' ' : '') + e.message); }
+function logLine(t) { const l = document.getElementById('log'); const d = document.createElement('div'); d.textContent = new Date().toLocaleTimeString() + '  ' + t; l.prepend(d); }
+function v(id) { return document.getElementById(id).value; }
+function esc(x) { return String(x ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+document.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', () => {
+  document.getElementById('liveInputs').style.display = r.value === 'live' && r.checked ? '' : 'none';
+}));
+health();
+</script>
+</body>
+</html>

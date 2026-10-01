@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><script src="../../../silence.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>礼佛 · 一念清净</title>
+  <link rel="preload" as="image" href="assets/hall.jpg">
+  <link rel="stylesheet" href="arrival.css">
+  <script>if(new URLSearchParams(location.search).get('from')==='wishing-pool')document.documentElement.classList.add('arrival-pending');</script>
+  <script src="arrival.js" defer></script>
+  <link rel="stylesheet" href="../assets/bodhi-passage.css">
+  <script src="../assets/bodhi-passage.js" defer></script>
+  <style>
+    :root{--gold:#e8c780;--paper:#f5ecd8;--ink:#372619;--red:#8d3128}
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#180f0c;color:var(--paper);font-family:"Noto Serif SC","Songti SC","STSong",serif;user-select:none}
+    button{font:inherit}
+    .experience{position:fixed;inset:0;width:100%;height:100%;overflow:clip;isolation:isolate;background:#261511;cursor:ns-resize}
+    .scene{position:absolute;inset:-7%;overflow:hidden;background:#271711;transform-origin:50% 52%;will-change:transform,filter;transition:filter .8s ease}
+    .scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.02);transition:opacity .75s ease;pointer-events:none}
+    .scene img.active{opacity:1}
+    .scene::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 43%,transparent 25%,rgba(25,8,3,.12) 63%,rgba(14,6,4,.62) 105%);pointer-events:none}
+    .grain{position:absolute;inset:0;z-index:8;opacity:.10;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+    .topbar{position:absolute;z-index:30;top:0;left:0;right:0;padding:24px 30px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(rgba(29,14,9,.6),transparent)}
+    .brand{display:flex;align-items:center;gap:13px;letter-spacing:.32em;font-size:14px;text-shadow:0 2px 12px #000}
+    .brand-mark{width:31px;height:31px;border:1px solid rgba(238,207,143,.72);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:17px;letter-spacing:0}
+    .controls{display:flex;gap:8px}
+    .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,239,203,.27);color:#fff4d5;background:rgba(42,19,11,.32);backdrop-filter:blur(8px);cursor:pointer;transition:.25s}
+    .icon-btn:hover{background:rgba(114,57,29,.55);border-color:rgba(255,225,164,.6)}
+    .guide{position:absolute;z-index:25;left:50%;top:12%;transform:translateX(-50%);text-align:center;width:min(88vw,520px);filter:drop-shadow(0 2px 8px #3d1609);transition:opacity .5s,transform .5s}
+    .guide.hidden{opacity:0;transform:translate(-50%,-8px);pointer-events:none}
+    .guide .eyebrow{font:11px/1.4 system-ui,sans-serif;letter-spacing:.35em;color:#f5dca8;margin-bottom:8px;opacity:.85}
+    .guide h1{font-weight:400;font-size:clamp(24px,3vw,42px);letter-spacing:.22em;margin:0 0 9px;text-indent:.22em}
+    .guide p{margin:0;color:rgba(255,247,225,.82);font-size:14px;letter-spacing:.16em;line-height:1.8}
+    .hint{position:absolute;z-index:31;left:50%;bottom:34px;transform:translateX(-50%);display:flex;align-items:center;gap:13px;padding:10px 18px;border:1px solid rgba(248,224,172,.35);border-radius:30px;background:rgba(35,16,10,.53);backdrop-filter:blur(10px);font:12px/1 system-ui,sans-serif;letter-spacing:.13em;white-space:nowrap;box-shadow:0 8px 35px rgba(27,7,2,.2);transition:.35s}
+    .mouse{width:17px;height:27px;border:1px solid rgba(255,241,208,.75);border-radius:10px;position:relative}
+    .mouse::before{content:"";position:absolute;left:7px;top:5px;width:2px;height:6px;border-radius:2px;background:var(--gold);animation:scroll 1.5s infinite}
+    @keyframes scroll{0%{transform:translateY(0);opacity:0}35%{opacity:1}100%{transform:translateY(8px);opacity:0}}
+    .pad-hotspot{position:absolute;z-index:15;left:50%;bottom:9%;transform:translateX(-50%);width:min(31vw,390px);height:min(18vw,190px);border:0;background:transparent;cursor:pointer;border-radius:50%;transition:.3s;outline:none}
+    .pad-hotspot::after{content:"";position:absolute;inset:5%;border:1px solid rgba(255,222,149,0);border-radius:50%;box-shadow:0 0 0 0 rgba(246,202,114,0);transition:.3s}
+    .pad-hotspot:hover::after,.pad-hotspot:focus-visible::after{border-color:rgba(255,222,149,.75);box-shadow:0 0 32px 4px rgba(246,202,114,.25)}
+    .cursor-guide{position:absolute;z-index:36;left:50%;bottom:17%;width:clamp(74px,11vw,126px);height:clamp(74px,11vw,126px);transform:translate(-18%,18%) rotate(-7deg);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;filter:drop-shadow(0 9px 12px rgba(34,10,3,.34))}
+    .cursor-guide.show{opacity:1;transform:translate(0,0) rotate(-7deg);animation:cursorFloat 2.2s ease-in-out infinite}
+    .cursor-guide img{width:100%;height:100%;object-fit:contain}
+    .cursor-guide::after{content:"点击拜垫";position:absolute;left:62%;top:70%;padding:7px 10px;border:1px solid rgba(255,232,177,.42);border-radius:14px;background:rgba(49,19,10,.72);color:#ffecc3;font:11px system-ui,sans-serif;letter-spacing:.1em;white-space:nowrap}
+    @keyframes cursorFloat{0%,100%{margin-top:0}50%{margin-top:-8px}}
+    .hands{position:absolute;z-index:18;left:50%;bottom:-30%;width:min(60vw,620px);height:min(62vh,540px);transform:translateX(-50%);opacity:0;transition:opacity .65s,bottom 1.1s cubic-bezier(.2,.8,.2,1);pointer-events:none;filter:drop-shadow(0 12px 25px rgba(43,12,4,.36))}
+    .posture-switch{display:none;min-width:76px;height:38px;padding:0 13px;border-radius:20px;border:1px solid rgba(255,239,203,.27);color:#fff4d5;background:rgba(42,19,11,.32);backdrop-filter:blur(8px);cursor:pointer;font-size:12px;letter-spacing:.08em;transition:.25s}
+    .posture-switch.show{display:block}
+    .posture-switch:hover{background:rgba(114,57,29,.55);border-color:rgba(255,225,164,.6)}
+    .hands.visible{bottom:-12%;opacity:1}
+    .open-hands-photo{position:absolute;z-index:2;left:50%;bottom:-8%;width:min(73vw,780px);height:min(74vh,680px);transform:translateX(-50%) scale(.92);opacity:1;transition:opacity .8s,transform .8s;filter:drop-shadow(0 12px 25px rgba(43,12,4,.25))}
+    .open-hands-photo img,.pray-photo img{width:100%;height:100%;object-fit:contain}
+    .pray-photo{position:absolute;z-index:3;left:50%;bottom:-7%;width:min(55vw,560px);height:min(58vh,580px);transform:translateX(-50%) scale(.9);opacity:0;transition:opacity .8s,transform .8s;filter:drop-shadow(0 12px 25px rgba(43,12,4,.25))}
+    .hands.joined .open-hands-photo{opacity:0;transform:translateX(-50%) scale(.98)}
+    .hands.joined .pray-photo{opacity:1;transform:translateX(-50%) scale(1)}
+    .hands.kneeling{bottom:-21%;transform:translateX(-50%) scale(.9)}
+    .hands.kneeling .pray-photo{bottom:-2%;transform:translateX(-50%) scale(.92)}
+    .press-target{position:absolute;z-index:24;left:50%;bottom:16%;transform:translateX(-50%);width:min(52vw,540px);height:56%;border:0;border-radius:48% 48% 20% 20%;background:transparent;cursor:pointer;display:none;touch-action:none}
+    .press-target.show{display:block}
+    .hold-ring{position:absolute;z-index:28;left:50%;top:53%;width:92px;height:92px;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;background:conic-gradient(var(--gold) var(--hold,0%),rgba(255,245,222,.18) 0);opacity:0;transition:opacity .25s;pointer-events:none}
+    .hold-ring::before{content:"按住\A 合掌";white-space:pre;display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:rgba(60,25,15,.8);border:1px solid rgba(255,228,169,.4);font-size:13px;line-height:1.55;letter-spacing:.15em;text-align:center;color:#fff2d2}
+    .hold-ring.show{opacity:1}
+    .bow-shade{position:absolute;z-index:19;inset:0;background:linear-gradient(rgba(14,5,3,.6),rgba(33,12,7,.12) 40%,rgba(12,5,3,.65));opacity:0;pointer-events:none}
+    .glow{position:absolute;z-index:17;left:50%;top:34%;width:15vmin;height:15vmin;transform:translate(-50%,-50%) scale(.2);border-radius:50%;background:radial-gradient(circle,#fffbd6 0,#ffdf7a 20%,rgba(255,190,56,.6) 43%,rgba(255,170,28,0) 72%);opacity:0;mix-blend-mode:screen;pointer-events:none}
+    .glow.reveal{animation:reveal 4.5s ease-out forwards}
+    .glow::before,.glow::after{content:"";position:absolute;inset:-130%;background:repeating-conic-gradient(from 0deg,rgba(255,224,124,0) 0 8deg,rgba(255,228,133,.14) 9deg 12deg,rgba(255,224,124,0) 13deg 23deg);animation:rotate 18s linear infinite}
+    .glow::after{inset:-70%;filter:blur(10px);animation-direction:reverse}
+    @keyframes reveal{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}30%{opacity:.92}100%{opacity:.72;transform:translate(-50%,-50%) scale(4.8)}}
+    @keyframes rotate{to{transform:rotate(1turn)}}
+    .manifest{position:absolute;z-index:26;inset:0;display:grid;place-items:center;background:radial-gradient(circle,rgba(255,238,163,.08),rgba(35,11,5,.16));opacity:0;pointer-events:none;transition:opacity 1.4s}
+    .manifest.show{opacity:1}
+    .manifest-card{text-align:center;margin-top:-4vh;text-shadow:0 3px 22px #4d1809}
+    .manifest-card .seal{width:62px;height:62px;margin:0 auto 22px;border:1px solid rgba(255,240,194,.78);border-radius:50%;display:grid;place-items:center;font-size:30px;color:#ffe9a9;box-shadow:0 0 40px rgba(255,198,74,.55),inset 0 0 24px rgba(255,210,101,.23)}
+    .manifest-card h2{font-size:clamp(29px,4vw,54px);font-weight:400;letter-spacing:.35em;text-indent:.35em;margin:0 0 14px}
+    .manifest-card p{font-size:14px;letter-spacing:.22em;color:#ffe8b5;margin:0}
+    .progress{position:absolute;z-index:32;right:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
+    .progress span{width:5px;height:5px;border-radius:50%;background:rgba(255,242,214,.4);transition:.3s}
+    .progress span.on{height:31px;border-radius:4px;background:#f2d18c;box-shadow:0 0 14px rgba(246,205,116,.55)}
+    .toast{position:absolute;z-index:50;left:50%;top:25%;transform:translate(-50%,-12px);padding:10px 17px;border-radius:20px;background:rgba(39,16,9,.72);border:1px solid rgba(255,229,177,.32);font:13px/1.5 system-ui,sans-serif;letter-spacing:.08em;opacity:0;transition:.35s;pointer-events:none}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .vignette{position:absolute;z-index:40;inset:0;box-shadow:inset 0 0 120px 20px rgba(20,5,2,.45);pointer-events:none}
+    /* 抽签：把签筒当作第二次回殿时才被发现的物件 */
+    .lot-layer{position:absolute;z-index:22;inset:0;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
+    .lot-layer.returning{opacity:.01}
+    .lot-layer.active{opacity:1;pointer-events:auto}
+    .lot-layer::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 62%,rgba(255,188,94,.14),transparent 17%),linear-gradient(rgba(21,7,3,.14),rgba(18,6,3,.38));opacity:0;transition:opacity 1.4s;pointer-events:none}
+    .lot-layer.active::before{opacity:1}
+    .lot-halo{position:absolute;left:17.5%;bottom:22%;width:min(20vw,240px);height:min(39vw,420px);transform:translate(-50%,10%) scale(.7);border-radius:50%;background:radial-gradient(ellipse,rgba(255,194,90,.32),rgba(255,168,49,.12) 28%,rgba(255,155,37,0) 69%);filter:blur(7px);opacity:0;transition:opacity .8s,transform 1s;pointer-events:none}
+    .lot-layer.active .lot-halo{opacity:.66;transform:translate(-50%,0) scale(1)}
+    .lot-tube{position:absolute;left:17%;bottom:14%;width:min(18vw,190px);height:min(43vw,430px);padding:0;border:0;background:transparent;cursor:grab;transform:translate(-50%,8%) scale(.88) rotate(0deg);transform-origin:50% 94%;opacity:.74;filter:drop-shadow(0 15px 22px rgba(24,7,2,.44));transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .45s,opacity .5s;touch-action:none}
+    .lot-tube img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+    .lot-tube:hover,.lot-tube:focus-visible{opacity:1;transform:translate(-50%,0) scale(.96) rotate(-1deg);filter:drop-shadow(0 16px 26px rgba(255,175,65,.24))}
+    .lot-tube:active,.lot-tube.picked{cursor:grabbing;transform:translate(-50%,0) scale(1) rotate(var(--tube-rotate,0deg));filter:drop-shadow(0 21px 33px rgba(255,175,65,.38))}
+    .lot-tube.settling{animation:tubeSettle 2.2s ease-in-out infinite}
+    .lot-tube.drop-ready{animation:tubeNudge 1.7s ease-in-out infinite}
+    .lot-touch{position:absolute;left:105%;top:47%;min-width:148px;padding:9px 12px;border:1px solid rgba(255,229,177,.35);border-radius:16px;background:rgba(42,17,9,.78);color:#ffecc3;font:12px/1.4 system-ui,sans-serif;letter-spacing:.11em;white-space:nowrap;opacity:0;transform:translateX(-8px);transition:.35s;pointer-events:none}
+    .lot-tube:hover .lot-touch,.lot-tube:focus-visible .lot-touch,.lot-tube.picked .lot-touch{opacity:1;transform:translateX(0)}
+    @keyframes tubeSettle{0%,100%{transform:translate(-50%,0) scale(1) rotate(-1deg)}50%{transform:translate(-50%,0) scale(1) rotate(1deg)}}
+    @keyframes tubeNudge{0%,100%{transform:translate(-50%,0) scale(1) rotate(0)}45%{transform:translate(-50%,0) scale(1) rotate(-4deg)}65%{transform:translate(-50%,0) scale(1) rotate(2deg)}}
+    .lot-sign{position:absolute;left:50%;bottom:11%;width:min(25vw,265px);height:min(17vw,178px);transform:translate(-50%,35%) rotate(-6deg);opacity:0;pointer-events:none;transition:opacity .4s,transform .8s cubic-bezier(.2,.8,.2,1);perspective:900px}
+    .lot-sign.visible{opacity:1;transform:translate(-50%,0) rotate(-3deg);pointer-events:auto}
+    .lot-sign.fallen{animation:signDrop .95s cubic-bezier(.2,.85,.25,1) both}
+    @keyframes signDrop{0%{opacity:0;transform:translate(-50%,-240%) rotate(12deg)}70%{opacity:1;transform:translate(-50%,12%) rotate(-7deg)}100%{opacity:1;transform:translate(-50%,0) rotate(-3deg)}}
+    .sign-paper{position:relative;width:100%;height:100%;border:1px solid rgba(92,47,19,.52);background:linear-gradient(145deg,#f6f2e9,#ddd7cc);box-shadow:0 17px 33px rgba(22,6,2,.4),inset 0 0 0 5px rgba(255,239,191,.18);transform-style:preserve-3d;transition:transform 1.15s cubic-bezier(.2,.75,.25,1);cursor:pointer}
+    .lot-sign.flipped .sign-paper{transform:rotateY(180deg)}
+    .sign-face{position:absolute;inset:0;display:grid;place-items:center;backface-visibility:hidden;color:#4b2a1d;text-align:center}
+    .sign-front{font-size:clamp(36px,5vw,70px);font-weight:500;letter-spacing:.18em;text-indent:.18em}
+    .sign-front::after{content:"签";display:block;font-size:11px;letter-spacing:.28em;text-indent:.28em;margin-top:6px;opacity:.65}
+    .sign-back{transform:rotateY(180deg);padding:17px;flex-direction:column;gap:7px}
+    .sign-back b{font-size:clamp(18px,2.1vw,25px);font-weight:500;letter-spacing:.16em}
+    .sign-back span{font-size:12px;letter-spacing:.14em;opacity:.76}
+    .reading-panel,.action-overlay{position:absolute;z-index:34;inset:0;display:grid;place-items:center;background:rgba(19,7,4,.48);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .7s}
+    .reading-panel.show,.action-overlay.show{opacity:1;pointer-events:auto}
+    .reading-shell{width:min(90vw,560px);padding:38px 44px 30px;text-align:center;border:1px solid rgba(255,226,167,.35);background:linear-gradient(145deg,rgba(65,30,15,.91),rgba(37,14,8,.94));box-shadow:0 20px 80px rgba(19,4,1,.4);color:#f9e7bf;transform:translateY(14px);transition:transform .7s}
+    .reading-panel.show .reading-shell,.action-overlay.show .reading-shell{transform:translateY(0)}
+    .reading-kicker{font:11px/1.5 system-ui,sans-serif;letter-spacing:.28em;color:#e2bb77;margin-bottom:14px}
+    .reading-shell h2{font-size:clamp(23px,3vw,34px);font-weight:400;letter-spacing:.18em;text-indent:.18em;margin:0 0 17px}
+    .reading-shell p{min-height:56px;margin:0 auto 26px;max-width:430px;font-size:15px;line-height:2;letter-spacing:.11em;color:rgba(255,242,213,.86)}
+    .reading-next,.action-submit{min-width:152px;padding:11px 20px;border:1px solid rgba(255,225,163,.45);border-radius:24px;background:rgba(131,65,27,.35);color:#fff0c9;font-size:13px;letter-spacing:.14em;cursor:pointer;transition:.25s}
+    .reading-next:hover,.reading-next:focus-visible,.action-submit:hover,.action-submit:focus-visible{background:rgba(173,95,40,.5);border-color:rgba(255,228,168,.8);transform:translateY(-1px)}
+    .reading-dots{display:flex;justify-content:center;gap:6px;margin-top:22px}
+    .reading-dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,232,187,.28);transition:.25s}
+    .reading-dots i.on{width:22px;border-radius:4px;background:#e6bd76}
+    .action-shell{width:min(90vw,610px);padding:34px 38px 30px;text-align:left}
+    .action-shell h2{text-align:center;font-size:25px;font-weight:400;letter-spacing:.16em;text-indent:.16em;margin:0 0 9px}
+    .action-shell>p{text-align:center;margin:0 0 24px;color:rgba(255,239,210,.74);font-size:13px;letter-spacing:.1em}
+    .action-field{display:block;margin:0 0 15px;color:#efd6a7;font-size:12px;letter-spacing:.14em}
+    .action-field textarea{display:block;width:100%;height:65px;margin-top:8px;resize:vertical;border:1px solid rgba(255,223,163,.25);border-radius:8px;padding:11px 12px;background:rgba(20,7,4,.48);color:#fff2d5;font:14px/1.6 "Noto Serif SC","Songti SC",serif;outline:none;user-select:text}
+    .action-field textarea:focus{border-color:rgba(255,216,142,.75);box-shadow:0 0 0 3px rgba(255,194,83,.1)}
+    .action-submit{display:block;margin:21px auto 0}
+    .receipt{display:none;text-align:center}
+    .action-overlay.done .action-form{display:none}.action-overlay.done .receipt{display:block}
+    .receipt-seal{width:58px;height:58px;margin:0 auto 19px;border:1px solid rgba(255,236,184,.7);border-radius:50%;display:grid;place-items:center;color:#f7d995;font-size:28px;box-shadow:0 0 30px rgba(240,177,65,.23)}
+    .receipt h3{margin:0 0 12px;font-weight:400;font-size:26px;letter-spacing:.19em;text-indent:.19em}.receipt p{margin:0;color:rgba(255,240,210,.78);font-size:13px;letter-spacing:.12em;line-height:1.9}
+    .screen-dim{position:absolute;z-index:20;inset:0;background:rgba(11,3,2,.46);opacity:0;pointer-events:none;transition:opacity 1.2s}.screen-dim.on{opacity:1}
+    .video-bridge{position:absolute;z-index:24;inset:0;background:#160b08;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
+    .video-bridge.show{opacity:1;pointer-events:auto}
+    .video-bridge video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(.98) brightness(.7);pointer-events:none}
+    .video-bridge::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(16,6,4,.28),rgba(20,7,4,.5)),radial-gradient(circle at 50% 46%,transparent 16%,rgba(9,3,2,.44) 100%);pointer-events:none}
+    .bridge-progress{position:absolute;z-index:2;left:50%;bottom:54px;width:min(38vw,420px);height:2px;transform:translateX(-50%);background:rgba(255,235,190,.22);overflow:hidden}
+    .bridge-progress i{display:block;width:0;height:100%;background:#e5bf79;box-shadow:0 0 12px rgba(255,203,111,.7);transition:width .18s ease}
+    .bridge-label{position:absolute;z-index:2;left:50%;top:14%;transform:translateX(-50%);text-align:center;opacity:0;transition:opacity .8s;color:#f3dfb4;text-shadow:0 2px 16px rgba(28,7,2,.7);pointer-events:none}
+    .video-bridge.show .bridge-label{opacity:1}
+    .bridge-label b{display:block;font-weight:400;font-size:clamp(23px,3vw,38px);letter-spacing:.22em;text-indent:.22em}
+    .bridge-label span{display:block;margin-top:10px;font-size:13px;letter-spacing:.16em;color:rgba(255,238,202,.78)}
+    .lot-closeup{position:absolute;z-index:16;inset:0;background:#2a120a;opacity:0;pointer-events:none;transition:opacity 1.4s;overflow:hidden}
+    .lot-closeup img{width:100%;height:100%;object-fit:cover;object-position:48% 54%;filter:saturate(.82) contrast(.98) brightness(.58) blur(1px);opacity:.72}
+    .lot-closeup.on{opacity:1}
+    @media(max-width:700px){.lot-tube{left:20%;bottom:16%;width:28vw;height:55vw}.lot-halo{left:20%;bottom:24%;width:34vw;height:55vw}.lot-touch{left:105%;min-width:130px;font-size:11px}.lot-sign{left:52%;bottom:14%;width:48vw;height:29vw}.reading-shell,.action-shell{padding:28px 24px 24px}.reading-shell p{min-height:72px}}
+    @media(max-width:700px){.topbar{padding:17px}.brand{font-size:12px}.guide{top:13%}.progress{right:14px}.hint{bottom:20px}.hands{width:92vw;height:55vh}.pad-hotspot{width:58vw;height:32vw}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+<style id="pb-embed-hide-chrome">#pb-host-splash,#pb-host-banner,#pb-host-badge,#pb-host-mark,#pb-host-widget,#pb-host-mask{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}</style><script src="../../../api.js"></script><script src="../../../reading-ui.js"></script><link rel="stylesheet" href="../../../reading-ui.css"></head>
+<body>
+  <main class="experience" id="experience" aria-label="礼佛互动场景">
+    <div class="scene" id="scene">
+      <img src="assets/hall.jpg" alt="大殿全景" class="active" data-shot="0">
+      <img src="assets/altar-wide.jpg" alt="走近拜垫" data-shot="1">
+      <img src="assets/kneel-close.jpg" alt="跪拜视角" data-shot="2">
+      <img src="assets/altar-mid.jpg" alt="低头礼拜" data-shot="3">
+      <img src="assets/altar-close.jpg" alt="佛前供案" data-shot="4">
+    </div>
+    <div class="glow" id="glow"></div>
+    <div class="bow-shade" id="bowShade"></div>
+    <div class="screen-dim" id="screenDim"></div>
+    <div class="video-bridge" id="videoBridge" aria-hidden="true">
+      <video id="bridgeVideo" preload="auto" muted playsinline src="assets/lot-transition.mp4"></video>
+      <div class="bridge-label"><b>回到这一念</b><span>继续向下滚动，走过这一段回应</span></div>
+      <div class="bridge-progress"><i id="bridgeProgress"></i></div>
+    </div>
+    <div class="lot-closeup" id="lotCloseup" aria-hidden="true"><img src="assets/sign-closeup.png" alt="签筒近景"></div>
+    <div class="hands" id="hands" aria-hidden="true">
+      <div class="open-hands-photo" aria-hidden="true"><img src="assets/hands-open.png" alt="摊开双手"></div>
+      <div class="pray-photo" aria-hidden="true"><img src="assets/hands-pray-new.png" alt="合掌手势"></div>
+    </div>
+    <div class="cursor-guide" id="cursorGuide" aria-hidden="true"><img src="assets/hand-point.png" alt="鼠标指针"></div>
+    <button class="press-target" id="pressTarget" aria-label="按住合掌"></button>
+    <div class="hold-ring" id="holdRing"></div>
+    <button class="pad-hotspot" id="padHotspot" aria-label="点击拜垫，走到佛前"></button>
+    <div class="lot-layer" id="lotLayer" aria-hidden="true">
+      <div class="lot-halo"></div>
+      <button class="lot-tube" id="lotTube" aria-label="摇动签筒">
+        <img src="assets/sign-tube.png" alt="木制签筒">
+        <span class="lot-touch">若仍有所问，摇一签。</span>
+      </button>
+      <button class="lot-sign" id="lotSign" aria-label="查看落下的签">
+        <span class="sign-paper">
+          <span class="sign-face sign-front">签</span>
+          <span class="sign-face sign-back"><b>静候这一念</b><span>点击揭签</span></span>
+        </span>
+      </button>
+    </div>
+    <section class="guide" id="guide" aria-live="polite">
+      <div class="eyebrow" id="eyebrow">入 殿</div>
+      <h1 id="title">一念清净</h1>
+      <p id="copy">滚动鼠标，缓步走向殿前拜垫</p>
+    </section>
+    <div class="hint" id="hint"><span class="mouse"></span><span id="hintText">向下滚动 · 或点击拜垫</span></div>
+    <div class="progress" id="progress" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <section class="manifest" id="manifest">
+      <div class="manifest-card"><div class="seal">佛</div><h2>心有所愿</h2><p>愿所念皆安 · 所行皆坦</p></div>
+    </section>
+    <section class="reading-panel" id="readingPanel" aria-live="polite">
+      <div class="reading-shell">
+        <div class="reading-kicker" id="readingKicker">签面短偈</div>
+        <h2 id="readingTitle">静候这一念</h2>
+        <p id="readingText"></p>
+        <button class="reading-next" id="readingNext">继续照见</button>
+        <div class="reading-dots" id="readingDots"><i class="on"></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+    <section class="action-overlay" id="actionOverlay" aria-live="polite">
+      <div class="reading-shell action-shell">
+        <form class="action-form" id="actionForm">
+          <h2>把这一句带回现实</h2>
+          <p>留下一小步，让看见的东西有地方发生。</p>
+          <label class="action-field">我看见了什么
+            <textarea id="seenInput" placeholder="写下一句你此刻真正看见的话"></textarea>
+          </label>
+          <label class="action-field">我接下来愿意做的一小步
+            <textarea id="stepInput" placeholder="写下一件这一周可以验证的小事"></textarea>
+          </label>
+          <button class="action-submit" type="submit">收进这一枚纸签</button>
+        </form>
+        <div class="receipt">
+          <div class="receipt-seal">签</div>
+          <h3>这一念，已收好</h3>
+          <p>真正的下一步，仍在你的现实里。</p>
+          <a class="bodhi-next" id="bodhiNext" href="../bodhi/index.html?from=daxiong-baodian">去菩提树下<svg viewBox="0 0 32 38" fill="none" aria-hidden="true"><path d="M16 3C12 12 3 9 3 19c0 8 10 12 13 17 3-5 13-9 13-17 0-10-9-7-13-16Z" stroke="currentColor"/><path d="M16 8v27m0-13-7-6m7 11 7-7" stroke="currentColor"/></svg></a>
+        </div>
+      </div>
+    </section>
+    <div class="topbar"><div class="brand"><span class="brand-mark">禅</span><span>云 隐 寺</span></div><div class="controls"><button class="posture-switch" id="postureBtn" aria-label="切换行礼与跪拜姿势">行礼姿势</button><button class="icon-btn" id="soundBtn" aria-label="关闭声音">音</button><button class="icon-btn" id="restartBtn" aria-label="重新开始">↻</button></div></div>
+    <div class="toast" id="toast">请先走到拜垫前</div>
+    <div class="grain"></div><div class="vignette"></div>
+  </main>
+  <div id="arrivalTransition" class="arrival-transition" aria-hidden="true">
+    <div class="arrival-curtain"></div>
+    <div class="arrival-edge"></div>
+  </div>
+<script>
+(() => {
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const scene=$('#scene'), guide=$('#guide'), title=$('#title'), copy=$('#copy'), eyebrow=$('#eyebrow'), hint=$('#hint'), hintText=$('#hintText');
+  const hands=$('#hands'), target=$('#pressTarget'), ring=$('#holdRing'), hotspot=$('#padHotspot'), bowShade=$('#bowShade'), glow=$('#glow'), manifest=$('#manifest'), toast=$('#toast');
+  const cursorGuide=$('#cursorGuide'), postureBtn=$('#postureBtn');
+  const lotLayer=$('#lotLayer'), lotTube=$('#lotTube'), lotSign=$('#lotSign'), lotCloseup=$('#lotCloseup'), screenDim=$('#screenDim');
+  const readingPanel=$('#readingPanel'), readingKicker=$('#readingKicker'), readingTitle=$('#readingTitle'), readingText=$('#readingText'), readingNext=$('#readingNext'), readingDots=$$('#readingDots i');
+  const actionOverlay=$('#actionOverlay'), actionForm=$('#actionForm');
+  const videoBridge=$('#videoBridge'), bridgeVideo=$('#bridgeVideo'), bridgeProgress=$('#bridgeProgress');
+  const dots=$$('#progress span'), shots=$$('.scene img');
+  let state='approach', approach=0, bow=0, hold=0, holding=false, lastWheel=0, audioOn=true, audioCtx, raf, autoMoving=false, posture='standing';
+  let shakeDistance=0,lastPointer=null,pointerId=null,readingIndex=0,flowTimers=[],bridgeDuration=5.084;
+  const texts={
+    approach:['入 殿','一念清净','滚动鼠标，缓步走向殿前拜垫'],
+    arrive:['礼 佛','合掌','轻按或长按画面，让双手合十'],
+    bow:['礼 佛','一拜','向下滚动低头 · 向上滚动起身'],
+    reveal:['显 灵','心有所愿','佛光已现，愿此刻心念澄明'],
+    bridge:['回 殿','回到这一念。','继续向下滚动，走过这一段回应'],
+    return1:['回 殿','把许下的心事，带回这一念。',''],
+    return2:['回 殿','现在，回来看看这一念。','签不替你决定，只照见此刻。'],
+    shaking:['抽 签','慢一点。','按住签筒，轻轻左右摇动'],
+    waiting:['抽 签','这一念还在筒中回旋。',''],
+    waiting2:['抽 签','再等一息。',''],
+    dropReady:['抽 签','让它落下来。','再摇一下。'],
+    signDrop:['落 签','签已落下。',''],
+    signDrop2:['落 签','但它不是命定，只是一盏提醒。','点击签条，揭开这一念'],
+    signReveal:['揭 签','照见这一念','它不是命定，只是一盏提醒。'],
+    action:['归 现实','签已看完。','答案仍在你手里。']
+  };
+  function setText(key){const t=texts[key]; eyebrow.textContent=t[0];title.textContent=t[1];copy.textContent=t[2]}
+  function dot(n){dots.forEach((d,i)=>d.classList.toggle('on',i===n))}
+  function shot(n){shots.forEach((im,i)=>im.classList.toggle('active',i===n))}
+  function renderApproach(){
+    const p=Math.max(0,Math.min(1,approach));
+    scene.style.transform=`scale(${1+p*.07}) translateY(${p*-1.7}%)`;
+    if(p<.32) shot(0); else if(p<.74) shot(1); else shot(2);
+    hotspot.style.opacity=1-p;
+  }
+  function arrive(){
+    if(state!=='approach') return; state='arriving'; autoMoving=true; hotspot.style.pointerEvents='none';
+    const start=performance.now(), from=approach;
+    function move(t){const p=Math.min(1,(t-start)/1500), ease=1-Math.pow(1-p,3);approach=from+(1-from)*ease;renderApproach();if(p<1)requestAnimationFrame(move);else ready()}
+    requestAnimationFrame(move);
+  }
+  function ready(){state='ready';autoMoving=false;shot(2);scene.style.transform='scale(1.07) translateY(-1.7%)';hands.classList.add('visible');target.classList.add('show');ring.classList.add('show');cursorGuide.classList.add('show');postureBtn.classList.add('show');setText('arrive');hintText.textContent='点击或按住画面 · 合掌';dot(1)}
+  function beginHold(){if(state!=='ready')return;holding=true;hold=0;ring.style.setProperty('--hold','0%');cancelAnimationFrame(raf);let start=performance.now();function tick(t){if(!holding)return;hold=Math.min(1,(t-start)/650);ring.style.setProperty('--hold',`${hold*100}%`);if(hold>=1)join();else raf=requestAnimationFrame(tick)}raf=requestAnimationFrame(tick)}
+  function endHold(){if(!holding)return;holding=false;if(hold>.12)join();else ring.style.setProperty('--hold','0%')}
+  function join(){if(state!=='ready')return;holding=false;state='joining';hands.classList.add('joined');cursorGuide.classList.remove('show');ring.classList.remove('show');target.classList.remove('show');guide.classList.add('hidden');hint.style.opacity='0';setTimeout(()=>{bell();state='bow';setText('bow');guide.classList.remove('hidden');hintText.textContent='向下滚动低头 · 向上滚动抬起';hint.style.opacity='1';dot(2)},800)}
+  function updateBow(delta){
+    if(state!=='bow')return;
+    bow=Math.max(0,Math.min(1,bow+delta));
+    const eased=bow*bow*(3-2*bow);
+    scene.style.transform=`scale(${1.07+eased*.09}) translateY(${(-1.7+eased*15)}%) rotateX(${eased*2.5}deg)`;
+    bowShade.style.opacity=eased*.68; hands.style.transform=`translateX(-50%) translateY(${eased*42}%) scale(${1-eased*.10})`;
+    if(eased>.52)shot(3);else shot(2);
+    if(bow>.96){title.textContent='俯首';copy.textContent='静停片刻，再向上滚动起身'}
+    if(bow<.08 && window.bowed){completeBow()}
+    if(bow>.92)window.bowed=true;
+  }
+  function completeBow(){if(state!=='bow')return;state='rising';window.bowed=false;shot(4);scene.style.transition='transform 1.6s cubic-bezier(.2,.8,.2,1),filter .8s';scene.style.transform='scale(1.1) translateY(-2%)';bowShade.style.transition='opacity 1.3s';bowShade.style.opacity='0';hands.style.transition='transform 1.2s,opacity 1s';hands.style.transform='translateX(-50%) translateY(60%)';hands.style.opacity='0';postureBtn.classList.remove('show');guide.classList.add('hidden');hint.style.opacity='0';setTimeout(reveal,1000)}
+  function later(fn,ms){const id=setTimeout(()=>{flowTimers=flowTimers.filter(x=>x!==id);fn()},ms);flowTimers.push(id);return id}
+  function reveal(){state='reveal';glow.classList.add('reveal');manifest.classList.add('show');setText('reveal');dot(3);later(()=>guide.classList.remove('hidden'),600);later(startBridge,4200);chime()}
+  function startBridge(){
+    if(state!=='reveal')return;
+    state='videoBridge';
+    manifest.classList.remove('show');
+    glow.className='glow';
+    guide.classList.add('hidden');
+    hint.style.opacity='0';
+    bridgeVideo.pause();
+    bridgeVideo.currentTime=0;
+    bridgeDuration=bridgeVideo.duration||5.084;
+    bridgeProgress.style.width='0%';
+    setText('bridge');
+    videoBridge.classList.add('show');
+  }
+  function scrubBridge(delta){
+    if(state!=='videoBridge')return;
+    const d=Math.sign(delta);
+    if(!d)return;
+    bridgeDuration=bridgeVideo.duration||bridgeDuration||5.084;
+    bridgeVideo.currentTime=Math.max(0,Math.min(bridgeDuration,bridgeVideo.currentTime+d*.22));
+    bridgeProgress.style.width=`${(bridgeVideo.currentTime/bridgeDuration)*100}%`;
+    if(bridgeVideo.currentTime>=bridgeDuration-.04)finishBridge();
+  }
+  function finishBridge(){
+    if(state!=='videoBridge')return;
+    bridgeVideo.pause();
+    bridgeVideo.currentTime=bridgeDuration;
+    bridgeProgress.style.width='100%';
+    state='bridgeEnd';
+    later(returnHall,650);
+  }
+  function returnHall(){if(!['reveal','bridgeEnd'].includes(state))return;state='returnHall';videoBridge.classList.remove('show');bridgeVideo.pause();bridgeVideo.currentTime=0;bridgeProgress.style.width='0%';manifest.classList.remove('show');glow.className='glow';lotLayer.className='lot-layer';lotSign.className='lot-sign';lotCloseup.classList.remove('on');screenDim.classList.remove('on');shot(0);scene.style.transition='transform 1.8s cubic-bezier(.2,.8,.2,1),filter 1.4s';scene.style.transform='scale(1.02) translateY(0)';scene.style.filter='brightness(.76) saturate(.84)';guide.classList.add('hidden');hint.style.opacity='0';hands.style.opacity='0';dot(4);later(()=>{if(state!=='returnHall')return;setText('return1');guide.classList.remove('hidden')},850);later(()=>{if(state!=='returnHall')return;setText('return2');lotCloseup.classList.add('on');lotLayer.classList.add('active');hintText.textContent='靠近签筒 · 让它被你发现';hint.style.opacity='1';state='signHint'},2550)}
+  function startShake(e,final=false){if(!['signHint','signPick','dropReady'].includes(state))return;if(final||state==='dropReady'){state='shakingFinal'}else{state='shaking';setText('shaking');hintText.textContent='慢慢摇动签筒 · 让这一念沉下来'};shakeDistance=0;lastPointer={x:e.clientX,y:e.clientY};pointerId=e.pointerId;lotTube.classList.add('picked');lotTube.setPointerCapture?.(e.pointerId);woodTick()}
+  function moveShake(e){if(!['shaking','shakingFinal'].includes(state)||e.pointerId!==pointerId||!lastPointer)return;const dx=e.clientX-lastPointer.x,dy=e.clientY-lastPointer.y;lastPointer={x:e.clientX,y:e.clientY};const d=Math.abs(dx)+Math.abs(dy);if(d<2)return;shakeDistance+=d;const rot=Math.max(-13,Math.min(13,(dx*.16)+(dy*.04)));lotTube.style.setProperty('--tube-rotate',`${rot}deg`);if(d>6)woodTick();if(state==='shakingFinal'&&shakeDistance>18)dropSign()}
+  function endShake(e){if(!['shaking','shakingFinal'].includes(state))return;if(e?.pointerId!==pointerId)return;lotTube.releasePointerCapture?.(pointerId);pointerId=null;lastPointer=null;lotTube.classList.remove('picked');lotTube.style.removeProperty('--tube-rotate');if(state==='shaking'&&shakeDistance>250)startWaiting();else if(state==='shaking'){state='signPick';setText('shaking');copy.textContent='再摇几下，让这一念沉下来'}else if(state==='shakingFinal'&&state!=='signDrop')state='dropReady'}
+  function startWaiting(){state='waiting';lotTube.classList.add('settling');setText('waiting');hintText.textContent='请给这一念一点时间';later(()=>{if(state!=='waiting')return;setText('waiting2')},1500);later(()=>{if(state!=='waiting')return;state='dropReady';lotTube.classList.remove('settling');lotTube.classList.add('drop-ready');setText('dropReady');hintText.textContent='再摇一下';},2700)}
+  let readingEpoch=0;
+  const signStatus=createReadingStatus(readingPanel.querySelector('.reading-shell'),async preset=>{
+    if(signBusy)return;signBusy=true;signStatus.waiting();
+    try{await TempleFlow.retryGeneration({preset});await obtainSign();}catch(error){signStatus.error(error);}finally{signBusy=false;}
+  });
+  let signBusy=false;
+  async function obtainSign(){
+    const run=readingEpoch;
+    const snap=await TempleFlow.drawSign();if(run!==readingEpoch)return;
+    const summary=snap.reading.summary;
+    readingSteps.splice(0,readingSteps.length,['签面短偈',summary.title,summary.verse],['此刻一念',summary.title,summary.message]);
+    lotSign.querySelector('.sign-back b').textContent=summary.title;
+    signStatus.hide();readingPanel.classList.remove('show');readingNext.hidden=false;readingDots.forEach((dot,i)=>dot.hidden=i>=readingSteps.length);
+    state='dropReady';dropResolvedSign();
+  }
+  async function dropSign(){
+    if(!['dropReady','shakingFinal'].includes(state)||signBusy)return;
+    state='awaitingReading';signBusy=true;readingPanel.classList.add('show');readingTitle.textContent='静候这一念';readingText.textContent='';readingNext.hidden=true;readingDots.forEach(dot=>dot.hidden=true);signStatus.waiting();
+    try{await obtainSign();}catch(error){signStatus.error(error);}finally{signBusy=false;}
+  }
+  function dropResolvedSign(){state='signDrop';lotTube.classList.remove('picked','drop-ready');lotTube.style.removeProperty('--tube-rotate');screenDim.classList.add('on');lotSign.classList.add('visible','fallen');hint.style.opacity='0';setText('signDrop');tapSound();later(()=>{if(state!=='signDrop')return;setText('signDrop2');},950)}
+  const readingSteps=[];
+  function showReading(i){readingIndex=i;const s=readingSteps[i];readingKicker.textContent=s[0];readingTitle.textContent=s[1];readingText.textContent=s[2];readingKicker.textContent=(TempleFlow.snapshot?.mode==='preset'?'预置案例演示 · ':'')+s[0];readingNext.textContent=i===readingSteps.length-1?'去菩提树下展开':'继续照见';readingDots.forEach((d,n)=>d.classList.toggle('on',n===i))}
+  function revealSign(){if(state!=='signDrop')return;state='signReveal';lotSign.classList.add('flipped');setText('signReveal');lotSign.blur();later(()=>{if(state!=='signReveal')return;readingPanel.classList.add('show');showReading(0);state='signReading';dot(5)},1150)}
+  function nextReading(){if(state!=='signReading')return;if(readingIndex<readingSteps.length-1){showReading(readingIndex+1);return}readingPanel.classList.remove('show');state='complete';if(window.parent!==window)window.parent.postMessage({type:'hall-complete'},location.origin);else location.href='../bodhi/index.html?from=daxiong-baodian'}
+  function shakeByKeyboard(){if(['signHint','signPick'].includes(state)){state='shaking';setText('shaking');shakeDistance=300;startWaiting()}else if(state==='dropReady')dropSign()}
+  function wheel(e){e.preventDefault();if(Date.now()-lastWheel<12)return;lastWheel=Date.now();const d=Math.sign(e.deltaY);
+    if(state==='approach'&&!autoMoving){approach=Math.max(0,Math.min(1,approach+d*.075));renderApproach();if(approach>=.97)arrive()}
+    else if(state==='ready'&&d<0){join()}
+    else if(state==='bow')updateBow(d*.115);
+    else if(state==='videoBridge')scrubBridge(e.deltaY);
+  }
+  function bell(){if(!audioOn)return;audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const now=audioCtx.currentTime;[196,294,392,588,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(f,now);o.frequency.exponentialRampToValueAtTime(f*.985,now+3.6);g.gain.setValueAtTime(i?0.07:0.17,now);g.gain.exponentialRampToValueAtTime(.0001,now+4);o.connect(g).connect(audioCtx.destination);o.start(now+i*.018);o.stop(now+4)})}
+  function chime(){if(!audioOn)return;audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const now=audioCtx.currentTime;[523.25,659.25,783.99].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,now+i*.3);g.gain.linearRampToValueAtTime(.055,now+i*.3+.08);g.gain.exponentialRampToValueAtTime(.0001,now+i*.3+2.5);o.connect(g).connect(audioCtx.destination);o.start(now+i*.3);o.stop(now+i*.3+2.6)})}
+  function woodTick(){if(!audioOn)return;audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const now=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='triangle';o.frequency.setValueAtTime(180+Math.random()*80,now);o.frequency.exponentialRampToValueAtTime(80,now+.08);g.gain.setValueAtTime(.045,now);g.gain.exponentialRampToValueAtTime(.0001,now+.09);o.connect(g).connect(audioCtx.destination);o.start(now);o.stop(now+.1)}
+  function tapSound(){if(!audioOn)return;audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const now=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(120,now);o.frequency.exponentialRampToValueAtTime(48,now+.15);g.gain.setValueAtTime(.12,now);g.gain.exponentialRampToValueAtTime(.0001,now+.18);o.connect(g).connect(audioCtx.destination);o.start(now);o.stop(now+.2)}
+  function togglePosture(){if(!['ready','bow'].includes(state))return;posture=posture==='standing'?'kneeling':'standing';hands.classList.toggle('kneeling',posture==='kneeling');postureBtn.textContent=posture==='kneeling'?'跪拜姿势':'行礼姿势';say(posture==='kneeling'?'已切换为跪拜姿势':'已切换为行礼姿势')}
+  function reset(){readingEpoch++;signBusy=false;signStatus.hide();readingNext.hidden=false;flowTimers.forEach(clearTimeout);flowTimers=[];state='approach';approach=0;bow=0;hold=0;posture='standing';window.bowed=false;autoMoving=false;shakeDistance=0;pointerId=null;lastPointer=null;shots.forEach((im,i)=>im.classList.toggle('active',i===0));scene.removeAttribute('style');hands.className='hands';hands.removeAttribute('style');target.className='press-target';ring.className='hold-ring';ring.style.setProperty('--hold','0%');bowShade.removeAttribute('style');glow.className='glow';manifest.className='manifest';videoBridge.classList.remove('show');bridgeVideo.pause();bridgeVideo.currentTime=0;bridgeProgress.style.width='0%';lotLayer.className='lot-layer';lotCloseup.classList.remove('on');screenDim.classList.remove('on');lotSign.className='lot-sign';readingPanel.classList.remove('show');actionOverlay.className='action-overlay';actionForm.reset();guide.classList.remove('hidden');hint.removeAttribute('style');hotspot.removeAttribute('style');cursorGuide.classList.remove('show');postureBtn.classList.remove('show');postureBtn.textContent='行礼姿势';setText('approach');hintText.textContent='向下滚动 · 或点击拜垫';dot(0)}
+  function say(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1500)}
+  hotspot.addEventListener('click',arrive); postureBtn.addEventListener('click',togglePosture); target.addEventListener('pointerdown',e=>{e.preventDefault();target.setPointerCapture(e.pointerId);beginHold()});target.addEventListener('pointerup',endHold);target.addEventListener('pointercancel',endHold);
+  lotTube.addEventListener('pointerdown',e=>{e.preventDefault();startShake(e,state==='dropReady')});lotTube.addEventListener('pointermove',moveShake);lotTube.addEventListener('pointerup',endShake);lotTube.addEventListener('pointercancel',endShake);lotTube.addEventListener('pointerenter',()=>{if(state==='signHint')lotTube.classList.add('drop-ready')});lotTube.addEventListener('pointerleave',()=>{if(state==='signHint')lotTube.classList.remove('drop-ready')});lotSign.addEventListener('click',revealSign);readingNext.addEventListener('click',nextReading);actionForm.addEventListener('submit',e=>{e.preventDefault();if(state!=='realityAction')return;state='complete';actionOverlay.classList.add('done');say('这一小步已收好')});
+  $('#restartBtn').addEventListener('click',reset);$('#soundBtn').addEventListener('click',e=>{audioOn=!audioOn;e.currentTarget.textContent=audioOn?'音':'静';e.currentTarget.setAttribute('aria-label',audioOn?'关闭声音':'开启声音');say(audioOn?'声音已开启':'声音已关闭')});
+  videoBridge.addEventListener('wheel',e=>{if(state!=='videoBridge')return;e.preventDefault();e.stopPropagation();scrubBridge(e.deltaY)},{passive:false});
+  window.addEventListener('wheel',wheel,{passive:false});window.addEventListener('keydown',e=>{if(e.key==='ArrowDown')wheel({preventDefault(){},deltaY:100});if(e.key==='ArrowUp')wheel({preventDefault(){},deltaY:-100});if(e.key==='Enter'&&state==='approach')arrive();if(e.key===' '&&state==='ready'){e.preventDefault();join()}if((e.key===' '||e.key==='ArrowLeft'||e.key==='ArrowRight')&&['signHint','signPick','dropReady'].includes(state)){e.preventDefault();shakeByKeyboard()}if(e.key==='Enter'&&state==='signDrop')revealSign()});
+  let touchY=0;window.addEventListener('touchstart',e=>touchY=e.touches[0].clientY,{passive:true});window.addEventListener('touchmove',e=>{const y=e.touches[0].clientY,dy=touchY-y;if(Math.abs(dy)>12){wheel({preventDefault(){},deltaY:dy});touchY=y}},{passive:true});
+  renderApproach();
+  // Optional local preview starts at the completed receipt; normal entry keeps the full ritual.
+  if(new URLSearchParams(location.search).get('preview')==='bodhi'){
+    state='complete';
+    guide.classList.add('hidden');hint.style.opacity='0';hotspot.style.pointerEvents='none';
+    lotCloseup.classList.add('on');screenDim.classList.add('on');
+    actionOverlay.classList.add('show','done');dot(6);
+  }
+})();
+</script>
+</body>
+</html>

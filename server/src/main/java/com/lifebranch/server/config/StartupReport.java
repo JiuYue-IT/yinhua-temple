@@ -38,11 +38,11 @@ public class StartupReport {
             case DRYRUN -> "dryrun 模拟（不连接硬件）";
             case SERIAL -> "serial " + props.device().serialPort() + "（当前 " + device.info().status().json() + "）";
         };
-        String dist = env.getProperty("app.web.dist", "../web/dist/");
+        String dist = env.getProperty("app.web.dist", "../front_all/因花寺-完整游戏/");
         Path index = Path.of(dist).resolve("index.html").toAbsolutePath().normalize();
         String webLine = Files.isRegularFile(index)
                 ? "已托管 " + index.getParent() + " → http://localhost:" + port + "/"
-                : "未找到 web/dist/index.html（开发时用 Vite 代理 /api 到本端口）";
+                : "未找到前端 index.html，请检查 WEB_DIST（默认 front_all/因花寺-完整游戏/）";
         log.info("""
 
                 ==================== 人生支线后端已启动 ====================

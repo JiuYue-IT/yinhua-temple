@@ -1,5 +1,9 @@
 # 人生支线 · 后端（server/）
 
+2026-10-01 更新：默认托管 `../front_all/因花寺-完整游戏/`，无需 npm 构建。
+前端固定使用直接问签，许愿池提交即生成 summary / detail，正殿抽签无需 A/B；原探索接口继续兼容。
+最新启动、结构化字段和测试记录见 [直接问签与双层输出](../docs/09-直接问签接入与双层输出.md)。下文部分 `web/dist` 描述属于旧版部署，可通过 WEB_DIST 自定义。
+
 Java 17 + Spring Boot 3.5.16。负责会话状态、AI 故事生成、预置案例和 USB 串口桥接。
 接口字段以 `docs/04-软工B-后端AI与接口契约.md` 为准，串口协议以 `docs/03` 第 5 节为准。
 
@@ -39,6 +43,7 @@ Copy-Item config.example.env .env   # 然后编辑 .env
 | `AI_API_KEY` | 空 | 密钥。**只写在 .env，不提交、不外发** |
 | `AI_MODEL` | `claude-opus-4-8` | 当前中转站上 `claude-opus-5` 会拒答，不要用 |
 | `AI_PROVIDER` | `anthropic` | 或 `openai`（走 `/v1/chat/completions`，地址写到 `/v1`） |
+| `AI_OPENAI_THINKING` | 空 | 仅支持 `thinking.type` 的服务使用；Kimi 直接问签可设 `disabled` 缩短等待，其余服务留空 |
 | `AI_AUTH` | `x-api-key` | 中转站要求 `Authorization: Bearer` 时改为 `bearer` |
 | `AI_EFFORT` | `low` | 生成深度；中转站不认识时留空 |
 | `AI_STRUCTURED_OUTPUT` / `AI_REFUSAL_FALLBACK` | `true` | 中转站报 400 时依次改为 `false` |

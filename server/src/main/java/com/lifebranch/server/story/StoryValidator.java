@@ -2,6 +2,7 @@ package com.lifebranch.server.story;
 
 import com.lifebranch.server.model.ReceiptDraft;
 import com.lifebranch.server.model.Reflection;
+import com.lifebranch.server.model.Sign;
 import com.lifebranch.server.model.Story;
 import com.lifebranch.server.model.StoryOption;
 import com.lifebranch.server.validation.TextRules;
@@ -29,6 +30,9 @@ public class StoryValidator {
     public static final int OUTCOME_MAX = 220;
     public static final int REFLECTION_FIELD_MAX = 120;
     public static final int DRAFT_FIELD_MAX = 120;
+    public static final int SIGN_TITLE_MAX = 20;
+    public static final int SIGN_VERSE_MAX = 120;
+    public static final int SIGN_FIELD_MAX = 220;
 
     /** 返回全部问题；空列表表示通过。 */
     public List<String> validate(Story story) {
@@ -73,6 +77,7 @@ public class StoryValidator {
             text(errors, p + ".outcome", o.outcome(), OUTCOME_MAX);
             reflection(errors, p + ".reflection", o.reflection());
             draft(errors, p + ".receiptDraft", o.receiptDraft());
+            sign(errors, p + ".sign", o.sign());
         }
         return errors;
     }
@@ -97,6 +102,20 @@ public class StoryValidator {
         }
         text(errors, p + ".insight", d.insight(), DRAFT_FIELD_MAX);
         text(errors, p + ".nextStep", d.nextStep(), DRAFT_FIELD_MAX);
+    }
+
+    /** null 表示故事未带签文（旧案例），抛签时由 SessionService 生成兜底签；带了就按长度校验。 */
+    private static void sign(List<String> errors, String p, Sign s) {
+        if (s == null) {
+            return;
+        }
+        text(errors, p + ".title", s.title(), SIGN_TITLE_MAX);
+        text(errors, p + ".verse", s.verse(), SIGN_VERSE_MAX);
+        text(errors, p + ".preview", s.preview(), SIGN_FIELD_MAX);
+        text(errors, p + ".remedy", s.remedy(), SIGN_FIELD_MAX);
+        text(errors, p + ".counsel", s.counsel(), SIGN_FIELD_MAX);
+        text(errors, p + ".nextStep", s.nextStep(), SIGN_FIELD_MAX);
+        text(errors, p + ".basis", s.basis(), SIGN_FIELD_MAX);
     }
 
     private static void text(List<String> errors, String field, String value, int max) {

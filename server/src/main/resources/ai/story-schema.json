@@ -18,7 +18,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "label", "outcome", "reflection", "receiptDraft"],
+        "required": ["id", "label", "outcome", "reflection", "receiptDraft", "sign"],
         "properties": {
           "id": { "type": "string", "enum": ["A", "B"] },
           "label": { "type": "string", "description": "不超过 30 字" },
@@ -46,6 +46,20 @@
             "properties": {
               "insight": { "type": "string", "description": "不超过 90 字" },
               "nextStep": { "type": "string", "description": "不超过 90 字" }
+            }
+          },
+          "sign": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["title", "verse", "preview", "remedy", "counsel", "nextStep", "basis"],
+            "properties": {
+              "title": { "type": "string", "description": "签题，不超过 15 字" },
+              "verse": { "type": "string", "description": "签面短偈，不超过 90 字，含蓄克制" },
+              "preview": { "type": "string", "description": "对当前选择的未来发展预演，不超过 180 字，必须使用可能性表达" },
+              "remedy": { "type": "string", "description": "对当前后悔念头的补救措施，不超过 180 字，给出可执行的回到当下的一步" },
+              "counsel": { "type": "string", "description": "带佛家规劝色彩的温和提醒，不超过 180 字，不作命运断言" },
+              "nextStep": { "type": "string", "description": "本周可执行的一小步，不超过 180 字" },
+              "basis": { "type": "string", "description": "说明签文基于当前选择、未选道路和用户目标，不超过 180 字" }
             }
           }
         }

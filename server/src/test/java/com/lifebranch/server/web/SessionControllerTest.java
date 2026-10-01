@@ -69,6 +69,14 @@ class SessionControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value("INVALID_OPTION"));
 
+        // 主殿抛签：先 sign_drawing，轮询到 sign_ready 后快照带 sign
+        mvc.perform(post("/api/sessions/" + id + "/sign")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("sign_drawing"))
+                .andExpect(jsonPath("$.sign").isEmpty());
+        JsonNode signReady = poll(id, "sign_ready");
+        assertThat(signReady.at("/sign/title").asText()).isEqualTo("量力而行");
+        assertThat(signReady.at("/sign/remedy").asText()).isNotBlank();
+
         postJson("/api/sessions/" + id + "/receipt", "{\"insight\":\"可以协商角色\",\"nextStep\":\"问一个小任务\"}")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("complete"))
@@ -94,7 +102,27 @@ class SessionControllerTest {
                 .andExpect(jsonPath("$.error.code").value("REQUEST_EXPIRED"));
 
         assertThat(((DryRunDeviceBridge) device).history()).containsExactly(DeviceEvent.DRAW, DeviceEvent.STORY,
-                DeviceEvent.REFLECT, DeviceEvent.STORY, DeviceEvent.RECEIPT, DeviceEvent.RESET);
+                DeviceEvent.REFLECT, DeviceEvent.STORY, DeviceEvent.SIGN, DeviceEvent.SIGN_RESULT,
+                DeviceEvent.RECEIPT, DeviceEvent.RESET);
+    }
+
+    @Test
+    void directPresetNeedsNoChoiceAndHasStructuredTwoStageOutput() throws Exception {
+        String body = mapper.writeValueAsString(java.util.Map.of("requestId", UUID.randomUUID().toString(),
+                "mode", "preset", "caseId", "team-project", "experience", "direct"));
+        var created = json(postJson("/api/sessions", body).andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.experience").value("direct")));
+        String id = created.path("id").asText();
+        var ready = poll(id, "ready");
+        assertThat(ready.at("/reading/summary/title").asText()).isNotBlank();
+        assertThat(ready.at("/reading/detail/understanding").asText()).isNotBlank();
+        postJson("/api/sessions/" + id + "/choice", "{\"optionId\":\"A\"}").andExpect(status().isConflict());
+        mvc.perform(post("/api/sessions/" + id + "/sign")).andExpect(status().isOk());
+        poll(id, "sign_ready");
+        postJson("/api/sessions/" + id + "/receipt", "{\"insight\":\"先做一小步\",\"nextStep\":\"说明时间边界\"}")
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("complete"))
+                .andExpect(jsonPath("$.receipt.experience").value("direct"))
+                .andExpect(jsonPath("$.receipt.concern").isNotEmpty());
     }
 
     @Test

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><script src="silence.js?v=block-output-2"></script><script>
+if(location.protocol==='file:'){
+ const guide='<!doctype html><meta charset="utf-8"><title>银花寺 · 启动</title><style>body{background:#e9eee5;color:#29473d;font:18px/2 sans-serif;max-width:650px;margin:15vh auto;padding:30px}h1{font-family:serif}</style><h1>银花寺 · S01–S15</h1><p>请先将压缩包全部解压，再双击同文件夹里的 <b>启动预览.cmd</b>。</p><p>游戏只有一个 index 入口，启动程序会自动打开完整流程。运行期间保留启动窗口。</p>';
+ location.replace('data:text/html;charset=utf-8,'+encodeURIComponent(guide));
+}
+</script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#25483f"><meta name="description" content="循着风声，来到山门前。一段关于迷茫与遗憾的入寺体验。">
+  <title>山门 · 入寺</title><script src="api.js"></script>
+  <link rel="preload" as="image" href="assets/arrival.webp"><link rel="stylesheet" href="style.css?v=flower-logo-20261001"><link rel="stylesheet" href="hall.css?v=compact-kings">
+  <script defer src="vendor/gsap.min.js"></script><script defer src="vendor/ScrollTrigger.min.js"></script><script defer src="hall.js?v=acrostic"></script><script defer src="main.js?v=no-audio-source-2"></script>
+</head>
+<body>
+  <section id="prologue" class="prologue" aria-label="故事开场">
+    <div class="prologue-copy"><p>你是否也曾，在一个选择面前停留许久。</p><p>把未说出口的愿望，和来不及放下的遗憾，藏在心里。</p><p>山中有一座寺，名为因花寺。</p><p>循水而行，花影渐深。此刻，且随风入山。</p></div>
+    <button id="skipPrologue" type="button" aria-label="跳过序章，进入首页">跳过序章 <span aria-hidden="true">→</span></button>
+  </section>
+  <main id="journey" aria-label="山门殿入寺体验">
+    <div class="viewport" id="viewport">
+      <div class="scene" id="scene">
+        <div class="landscape">
+          <div class="sky"></div>
+          <svg class="mountains" viewBox="0 0 1672 600" preserveAspectRatio="none"><path fill="#93babb" d="M0 240Q170 30 380 190T780 165T1170 150T1672 230V600H0Z"/><path fill="#709e99" d="M0 375Q180 110 470 360T950 300T1400 325T1672 250V600H0Z"/></svg>
+          <div class="ground"></div>
+        </div>
+        <div class="temple" id="temple">
+          <img id="closed" src="assets/temple-closed-hd.png" alt="因花寺山门" draggable="false">
+          <img id="videoGate" src="assets/knock-closed.webp" alt="" aria-hidden="true" draggable="false" style="opacity:0">
+          <video id="opening" aria-hidden="true" muted playsinline preload="auto" poster="assets/knock-closed.webp"><source src="assets/knock-opening.webm" type="video/webm"></video>
+          <img id="opened" src="assets/knock-open.webp" alt="" draggable="false">
+          <div id="knockTargets" hidden>
+            <button class="knock-target knock-left" aria-label="轻叩左门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩</span></button>
+            <button class="knock-target knock-right" aria-label="轻叩右门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩</span></button>
+          </div>
+        </div>
+        <div class="arrival" id="arrival"><img src="assets/hero-yinhua-clean.png" alt="因花寺粉色水院"><img id="heroTitleArt" src="assets/hero-yinhua.png" alt="因花寺"><canvas id="titleParticles" aria-hidden="true"></canvas><video id="hero" muted playsinline loop preload="auto" poster="assets/hero-yinhua.png" src="assets/hero.mp4"></video></div>
+        <div class="water-ripples" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="birds" aria-hidden="true"><span class="bird bird-a">⌁</span><span class="bird bird-b">⌁</span><span class="bird bird-c">⌁</span></div>
+        <section class="arrival-copy" aria-label="银花寺序章">
+          <span class="arrival-copy__pinyin">yin</span>
+          <h1><span>银</span><span>花</span><span>寺</span></h1>
+          <span class="arrival-copy__roman">hua&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nü&nbsp;&nbsp;&nbsp;&nbsp;si</span>
+          <p>循着风声，来到山门前</p>
+          <small>一段关于选择、愿望与现实行动的沉浸式数字寺庙体验</small>
+        </section>
+        <div class="tree tree-left" id="treeLeft"><img src="assets/trees-left.webp" alt="" draggable="false"></div>
+        <div class="tree tree-right" id="treeRight"><img src="assets/trees-right.webp" alt="" draggable="false"></div>
+        <div class="petals" id="petals"></div>
+      </div>
+      <div class="edge-shade"></div>
+      <section id="hall" aria-label="天王殿，四句观心偈" hidden></section>
+      <div id="hallTransition" class="hall-transition" hidden><video id="enterHall" muted playsinline preload="auto" poster="assets/enter-hall.jpg" src="assets/enter-hall.mp4"></video></div>
+      <section id="courtyard" class="courtyard" aria-label="前院" hidden><img src="assets/courtyard.webp" alt="穿过天王殿，眼前是花树环绕的石径与前院"><button id="returnToGate">回到山门</button></section>
+      <header class="chapter"><span class="seal" id="chapterSeal" aria-hidden="true">入</span><span id="chapterLabel">山门殿<span class="chapter-line"></span>入寺</span></header>
+      <button id="sound" class="sound" aria-label="开启风声与钟声" aria-pressed="false"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="soundLabel">听风</span></button>
+      <section id="question" class="question" aria-labelledby="questionText">
+        <h1 id="questionText">你今日为何而来？</h1>
+        <div class="choices"><button data-choice="lost"><span>我对前路有些迷茫</span></button><button data-choice="regret"><span>我对曾经的选择仍有遗憾</span></button></div>
+        <p class="choice-hint">随此刻的心，选一念。</p>
+      </section>
+      <button id="approach" class="scroll-cue"><span id="cueText">向前，慢慢走</span><span class="scroll-stroke" aria-hidden="true"></span></button>
+      <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+      <div class="completion" id="completion" hidden><p id="ending" tabindex="-1">先把心事，交给这一阵风。</p><button id="replay">再走一次</button></div>
+      <div id="notice" class="notice" role="status"></div>
+      <p id="knockInstruction" class="knock-instruction" hidden>轻叩山门</p>
+    </div>
+  </main>
+  <div id="handCursor" aria-hidden="true"><img src="assets/hand-point.webp" alt=""><img class="hand-fist" src="assets/hand-knock.webp" alt=""></div>
+  <script defer src="continuation.js?v=bodhi-music"></script><script defer src="temple-map.js?v=hover-transition"></script><script defer src="courtyard-passage.js?v=refined-20261001"></script><script defer src="mouse-guides.js"></script>
+  <noscript><p class="no-js">请启用 JavaScript，体验滚动入寺与开门动画。</p></noscript>
+<script defer src="unified-cursor.js?v=2"></script></body>
+</html>

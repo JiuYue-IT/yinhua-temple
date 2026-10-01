@@ -4,6 +4,9 @@ import com.lifebranch.server.config.AppProperties;
 import com.lifebranch.server.story.ai.AnthropicStoryProvider;
 import com.lifebranch.server.story.ai.OpenAiStoryProvider;
 import com.lifebranch.server.story.ai.StoryPrompt;
+import com.lifebranch.server.story.ai.ReadingPrompt;
+import com.lifebranch.server.model.Reading;
+import com.lifebranch.server.model.WishInput;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +17,15 @@ import org.springframework.stereotype.Component;
  * 未配置时不创建客户端；SessionService 会在创建会话时直接返回 503 AI_NOT_CONFIGURED。
  */
 @Component
-public class LiveStoryProvider implements StoryProvider {
+public class LiveStoryProvider implements StoryProvider, ReadingProvider {
 
     private static final Logger log = LoggerFactory.getLogger(LiveStoryProvider.class);
 
     private final StoryProvider delegate;
+    private final ReadingPrompt readingPrompt;
 
-    public LiveStoryProvider(AppProperties props, StoryPrompt prompt) {
+    public LiveStoryProvider(AppProperties props, StoryPrompt prompt, ReadingPrompt readingPrompt) {
+        this.readingPrompt = readingPrompt;
         AppProperties.Ai ai = props.ai();
         if (!ai.configured()) {
             log.info("AI 未配置（需要 AI_ENDPOINT、AI_API_KEY、AI_MODEL），真实模式不可用，预置案例可用");
@@ -48,5 +53,16 @@ public class LiveStoryProvider implements StoryProvider {
         if (delegate instanceof AutoCloseable c) {
             c.close();
         }
+    }
+
+    @Override
+    public Reading generate(WishInput input) throws StoryGenerationException, InterruptedException {
+        if (delegate instanceof OpenAiStoryProvider openai) {
+            return openai.generateContent(readingPrompt.userMessage(input), readingPrompt);
+        }
+        if (delegate instanceof AnthropicStoryProvider anthropic) {
+            return anthropic.generateContent(readingPrompt.userMessage(input), readingPrompt);
+        }
+        throw StoryGenerationException.unavailable();
     }
 }

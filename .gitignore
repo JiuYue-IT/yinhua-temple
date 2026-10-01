@@ -4,3 +4,50 @@ Thumbs.db
 .vscode/
 .env
 node_modules/
+
+# Local credentials and tool settings
+.env.*
+!.env.example
+!*.example.env
+.claude/
+.codex/
+*.pem
+*.p12
+
+# Local history and design work (not part of the runnable release)
+/archive/
+/design/
+.scratch/
+
+# Generated files and verification output
+__pycache__/
+*.py[cod]
+*.log
+/tools/e2e/*.png
+/tools/e2e/*.audit.json
+/tools/e2e/direct.e2e.json
+
+# Superseded frontend variants; archived locally, never publish these paths
+/front_all/因花寺-完整游戏/assets/courtyard-frames/
+/front_all/因花寺-完整游戏/original/chapters/gate/
+/front_all/因花寺-完整游戏/original/incense/assets/offline.js
+/front_all/因花寺-完整游戏/original/incense/assets/index-CzVgk2gT.js
+/front_all/因花寺-完整游戏/original/recovery-report.json
+/front_all/因花寺-完整游戏/original/story.js
+/front_all/因花寺-完整游戏/background-music.js
+/front_all/因花寺-完整游戏/assets/courtyard-enhanced.mp4
+/front_all/因花寺-完整游戏/assets/courtyard-refined.mp4
+/front_all/因花寺-完整游戏/assets/guardian-lute.webp
+/front_all/因花寺-完整游戏/assets/guardian-spear.webp
+/front_all/因花寺-完整游戏/assets/guardian-sword.webp
+/front_all/因花寺-完整游戏/assets/knock-opening.mp4
+/front_all/因花寺-完整游戏/assets/opening-original.mp4
+/front_all/因花寺-完整游戏/assets/ring-left.webp
+/front_all/因花寺-完整游戏/assets/ring-right.webp
+/front_all/因花寺-完整游戏/assets/swallows.png
+/front_all/因花寺-完整游戏/assets/temple-closed.webp
+/front_all/因花寺-完整游戏/assets/temple-open.webp
+/front_all/因花寺-完整游戏/assets/yin-hua-seal.png
+/tools/e2e/journey.e2e.js
+/tools/e2e/offline.e2e.js
+/tools/frontend/archive_legacy.py

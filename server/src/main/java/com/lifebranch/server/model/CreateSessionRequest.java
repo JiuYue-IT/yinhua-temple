@@ -15,7 +15,18 @@ public record CreateSessionRequest(
         @NotNull(message = "缺少 mode（live 或 preset）。")
         SessionMode mode,
         String caseId,
-        @Valid Input input) {
+        @Valid Input input,
+        ExperienceMode experience,
+        WishInput wish) {
+
+    /** 保持旧探索请求与 Java 调用兼容。 */
+    public CreateSessionRequest(String requestId, SessionMode mode, String caseId, Input input) {
+        this(requestId, mode, caseId, input, ExperienceMode.EXPLORE, null);
+    }
+
+    public ExperienceMode experienceMode() {
+        return experience == null ? ExperienceMode.EXPLORE : experience;
+    }
 
     public static final String UUID_REGEX =
             "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";

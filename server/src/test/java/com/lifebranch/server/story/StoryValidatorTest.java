@@ -3,6 +3,7 @@ package com.lifebranch.server.story;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lifebranch.server.model.ReceiptDraft;
 import com.lifebranch.server.model.Reflection;
+import com.lifebranch.server.model.Sign;
 import com.lifebranch.server.model.Story;
 import com.lifebranch.server.model.StoryOption;
 import org.junit.jupiter.api.Test;
@@ -42,11 +43,25 @@ class StoryValidatorTest {
     @Test
     void rejectsIncompleteReflectionAndMissingDraft() {
         StoryOption badReflection = new StoryOption("A", "标签", "后续",
-                new Reflection("目标", " ", "替代"), new ReceiptDraft("发现", "下一步"));
-        StoryOption noDraft = new StoryOption("B", "标签", "后续", null, null);
+                new Reflection("目标", " ", "替代"), new ReceiptDraft("发现", "下一步"), null);
+        StoryOption noDraft = new StoryOption("B", "标签", "后续", null, null, null);
         List<String> errors = validator.validate(story(badReflection, noDraft));
         assertThat(errors).anyMatch(e -> e.contains("reflection.concern"));
         assertThat(errors).anyMatch(e -> e.contains("receiptDraft 缺失"));
+    }
+
+    @Test
+    void presetSignsAreValidAndSignFieldsAreLengthChecked() throws Exception {
+        PresetCatalog catalog = new PresetCatalog(new ObjectMapper(), validator);
+        Story preset = catalog.find("team-project").orElseThrow().story();
+        assertThat(preset.option("A").sign()).isNotNull();
+        assertThat(preset.option("B").sign()).isNotNull();
+
+        Sign tooLong = new Sign("题".repeat(StoryValidator.SIGN_TITLE_MAX + 1), "偈", " ", "补救", "劝", "一步", "依据");
+        StoryOption withBadSign = new StoryOption("A", "标签", "后续", null, new ReceiptDraft("发现", "下一步"), tooLong);
+        List<String> errors = validator.validate(story(withBadSign, option("B", null)));
+        assertThat(errors).anyMatch(e -> e.contains("sign.title 超过"));
+        assertThat(errors).anyMatch(e -> e.contains("sign.preview 为空"));
     }
 
     @Test
@@ -77,6 +92,6 @@ class StoryValidatorTest {
     }
 
     private static StoryOption option(String id, Reflection r) {
-        return new StoryOption(id, "标签" + id, "后续" + id, r, new ReceiptDraft("发现", "下一步"));
+        return new StoryOption(id, "标签" + id, "后续" + id, r, new ReceiptDraft("发现", "下一步"), null);
     }
 }

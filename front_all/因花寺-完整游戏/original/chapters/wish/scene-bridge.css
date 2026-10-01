@@ -1,0 +1,19 @@
+.scene-bridge{position:fixed;inset:0;z-index:100;background:#160b08;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;isolation:isolate}
+.scene-bridge.show{opacity:1;visibility:visible;pointer-events:auto}
+.bridge-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+#sceneBridgeVideo{opacity:0;transition:opacity .35s ease}
+.scene-bridge.playing #sceneBridgeVideo{opacity:1}
+.bridge-facade{position:absolute;left:50%;top:50%;width:var(--facade-width,100vw);height:var(--facade-height,56.28vw);margin-left:calc(var(--facade-width,100vw) / -2);margin-top:calc(var(--facade-height,56.28vw) / -2);transform-origin:50% 49%;opacity:0;will-change:transform,opacity}
+.bridge-facade-image{position:absolute;inset:0;width:100%;height:100%}
+.bridge-facade-shade{position:absolute;inset:0;background:#160b08;opacity:0}
+.scene-bridge-plaque{position:absolute;left:42.3%;top:44.4%;width:15.4%;height:8.65%;filter:drop-shadow(0 2px 2px #120905);opacity:0;pointer-events:none}
+.bridge-vignette{position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 50% 48%,transparent 10%,rgba(15,6,2,.75) 100%);pointer-events:none}
+.bridge-veil{position:absolute;inset:0;background:#160b08;opacity:0;pointer-events:none}
+.scene-bridge-copy{position:absolute;left:0;right:0;bottom:7%;margin:0;text-align:center;color:#fff9ee;font-size:clamp(12px,1.1vw,15px);letter-spacing:.24em;line-height:2;text-shadow:0 2px 15px #271108,0 0 8px #271108;pointer-events:none}
+.bridge-skip{position:absolute;right:28px;bottom:28px;padding:10px 14px;border:1px solid rgba(255,239,199,.35);border-radius:2px;background:rgba(22,11,8,.35);color:#fff3d8;font-family:inherit;font-size:12px;line-height:1.4;letter-spacing:.13em;cursor:pointer;opacity:.7;transition:opacity .2s,background .2s}
+.bridge-skip:hover,.bridge-skip:focus-visible{opacity:1;background:rgba(22,11,8,.75)}
+.bridge-skip:focus-visible{outline:2px solid #efd596;outline-offset:4px}
+.bridge-skip span{margin-left:6px}
+body.bridge-active #hand{display:none}
+@media(max-width:700px){.bridge-skip{right:16px;bottom:18px;font-size:11px}.scene-bridge-copy{bottom:12%;font-size:12px;letter-spacing:.14em}}
+@media(prefers-reduced-motion:reduce){#sceneBridgeVideo{transition:none}.bridge-facade{will-change:auto}}

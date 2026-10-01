@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+<style>@keyframes flap{0%,100%{transform:rotate(-7deg) scaleY(1)}50%{transform:rotate(10deg) scaleY(.65)}}.wing{transform-origin:73px 49px;animation:flap 1.4s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.wing{animation:none}}</style>
+<path fill="#244c43" d="M77 46L7 69l27-4-13 13 53-24z"/>
+<g class="wing"><path fill="#244c43" d="M78 51C57 38 36 14 10 5c4 20 24 43 55 50z"/><path fill="#89a8b6" d="M77 50C53 34 39 22 30 14c6 17 21 32 39 40z"/></g>
+<path fill="#244c43" d="M52 53c19-7 30-23 44-16 5 2 6 6 7 9l12 1-12 5c-11 18-33 20-51 1z"/>
+<path fill="#f0e8d5" d="M47 58c21 2 39-2 55-12-7 20-31 25-55 12z"/><circle cx="97" cy="42" r="2" fill="#101e19"/>
+</svg>

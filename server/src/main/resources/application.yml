@@ -14,13 +14,13 @@ spring:
       write-dates-as-timestamps: false
   web:
     resources:
-      # 前端 npm run build 生成 web/dist 后，由后端在 http://localhost:8080/ 直接托管（单端口演示）
+      # 默认直接托管 front_all 的完整静态前端（单端口演示），无需 npm 构建
       static-locations: classpath:/static/,file:${app.web.dist}
 
 app:
   web:
     # 相对于启动目录 server/；也可用环境变量 WEB_DIST 指定绝对路径（以 / 结尾）
-    dist: ${WEB_DIST:../web/dist/}
+    dist: ${WEB_DIST:../front_all/因花寺-完整游戏/}
   ai:
     # anthropic（默认，官方 SDK）| openai（OpenAI 兼容 chat/completions）
     provider: ${AI_PROVIDER:anthropic}
@@ -32,10 +32,13 @@ app:
     # low | medium | high | xhigh | max；设为空字符串则不发送（中转站不支持时）
     effort: ${AI_EFFORT:low}
     structured-output: ${AI_STRUCTURED_OUTPUT:true}
+    # 支持 thinking.type 的 OpenAI 兼容服务可设置 enabled / disabled；空值不发送。
+    openai-thinking: ${AI_OPENAI_THINKING:}
     refusal-fallback: ${AI_REFUSAL_FALLBACK:true}
     max-tokens: 16000
-    request-timeout-seconds: 25
-    task-timeout-seconds: 30
+    # 单次模型请求 / 整个生成任务的上限（秒）。加入 sign 后一次输出约 1600 token，中转站实测 35—45 秒
+    request-timeout-seconds: ${AI_REQUEST_TIMEOUT_SECONDS:60}
+    task-timeout-seconds: ${AI_TASK_TIMEOUT_SECONDS:65}
   preset:
     # 预置案例的固定停顿（毫秒），页面始终标注为预置案例
     delay-ms: 2000

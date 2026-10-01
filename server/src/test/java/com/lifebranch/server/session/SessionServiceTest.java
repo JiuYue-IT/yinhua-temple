@@ -196,6 +196,60 @@ class SessionServiceTest {
         assertThat(device.history()).containsExactly(DeviceEvent.DRAW, DeviceEvent.STORY, DeviceEvent.STORY);
     }
 
+    // ------------------------------------------------------------ 抛签
+
+    @Test
+    void signFlowUsesStorySignAndSendsSignThenSignResult() {
+        String id = readyPreset().id();
+        service.choose(id, "A");
+        device.clearHistory();
+
+        SessionSnapshot s = service.drawSign(id);
+        assertThat(s.status()).isEqualTo(SessionStatus.SIGN_DRAWING);
+        assertThat(s.sign()).isNull();
+        service.drawSign(id); // 重复调用不重复发事件
+        assertCode(() -> service.choose(id, "B"), ErrorCodes.INVALID_STATE);
+        assertCode(() -> service.confirmReceipt(id, new ReceiptRequest("a", "b")), ErrorCodes.INVALID_STATE);
+
+        s = awaitStatus(id, SessionStatus.SIGN_READY);
+        assertThat(s.sign()).isEqualTo(s.story().option("A").sign());
+        assertThat(s.sign().title()).isEqualTo("先照见，再前行");
+        service.drawSign(id); // sign_ready 再抛也只是返回快照
+
+        s = service.confirmReceipt(id, new ReceiptRequest("发现", "下一步"));
+        assertThat(s.status()).isEqualTo(SessionStatus.COMPLETE);
+        assertThat(s.sign()).isNotNull();
+        assertThat(device.history()).containsExactly(DeviceEvent.SIGN, DeviceEvent.SIGN_RESULT, DeviceEvent.RECEIPT);
+    }
+
+    @Test
+    void storyWithoutSignGetsFallbackBuiltFromExistingFields() {
+        live.respond(validStory(true));
+        SessionSnapshot s = service.create(live(uuid(), LIVE_INPUT));
+        s = awaitStatus(s.id(), SessionStatus.READY);
+        service.choose(s.id(), "A");
+        service.drawSign(s.id());
+        s = awaitStatus(s.id(), SessionStatus.SIGN_READY);
+        StoryOption a = s.story().option("A");
+        assertThat(s.sign().title()).isEqualTo(s.story().title());
+        assertThat(s.sign().preview()).isEqualTo(a.outcome());
+        assertThat(s.sign().remedy()).isEqualTo(a.reflection().alternative());
+        assertThat(s.sign().nextStep()).isEqualTo(a.receiptDraft().nextStep());
+        assertThat(s.sign().basis()).contains(LIVE_INPUT.priority());
+    }
+
+    @Test
+    void signRequiresChosenOptionAndIsCancelledByReset() throws Exception {
+        SessionSnapshot s = readyPreset();
+        assertCode(() -> service.drawSign(s.id()), ErrorCodes.INVALID_STATE); // ready 还没选
+        service.choose(s.id(), "B");
+        service.drawSign(s.id());
+        service.reset();
+        Thread.sleep(900); // 等过抛签延时，迟到的落签不能再发事件
+        assertThat(device.history()).containsExactly(DeviceEvent.DRAW, DeviceEvent.STORY, DeviceEvent.STORY,
+                DeviceEvent.SIGN, DeviceEvent.RESET);
+    }
+
     // ------------------------------------------------------------ 失败
 
     @Test
@@ -211,7 +265,7 @@ class SessionServiceTest {
     @Test
     void invalidStoryStructureBecomesFormatError() {
         Story broken = new Story("题", "问", List.of("假设"), "开场", "决定",
-                List.of(new StoryOption("A", "a", "o", null, new ReceiptDraft("i", "n"))));
+                List.of(new StoryOption("A", "a", "o", null, new ReceiptDraft("i", "n"), null)));
         live.respond(broken);
         SessionSnapshot s = service.create(live(uuid(), LIVE_INPUT));
         assertThat(awaitStatus(s.id(), SessionStatus.ERROR).error().code()).isEqualTo(ErrorCodes.AI_FORMAT_ERROR);
@@ -247,9 +301,14 @@ class SessionServiceTest {
         service.restoreDeviceDisplay();
         service.choose(s.id(), "A");
         service.restoreDeviceDisplay();
+        service.drawSign(s.id());
+        service.restoreDeviceDisplay();
+        awaitStatus(s.id(), SessionStatus.SIGN_READY);
+        service.restoreDeviceDisplay();
         service.confirmReceipt(s.id(), new ReceiptRequest("发现", "下一步"));
         service.restoreDeviceDisplay();
         assertThat(device.history()).containsExactly(DeviceEvent.STORY, DeviceEvent.REFLECT, DeviceEvent.REFLECT,
+                DeviceEvent.SIGN, DeviceEvent.SIGN, DeviceEvent.SIGN_RESULT, DeviceEvent.SIGN_RESULT,
                 DeviceEvent.RECEIPT, DeviceEvent.RECEIPT);
     }
 
@@ -342,9 +401,9 @@ class SessionServiceTest {
                 "你去了外地。", "第一个月末，你会怎么做？",
                 List.of(new StoryOption("A", "继续适应", "你逐渐熟悉了节奏。",
                                 withReflection ? new com.lifebranch.server.model.Reflection("目标", "后果", "替代") : null,
-                                new ReceiptDraft("发现A", "下一步A")),
+                                new ReceiptDraft("发现A", "下一步A"), null),
                         new StoryOption("B", "回来", "你回到了原来的城市。", null,
-                                new ReceiptDraft("发现B", "下一步B"))));
+                                new ReceiptDraft("发现B", "下一步B"), null)));
     }
 
     /** 可控的假 AI：立即返回、立即失败，或阻塞到 release。 */

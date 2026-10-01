@@ -82,11 +82,15 @@ public class AnthropicStoryProvider implements StoryProvider, AutoCloseable {
     }
 
     MessageCreateParams buildParams(Input input) {
+        return buildParams(prompt.userMessage(input), prompt);
+    }
+
+    private MessageCreateParams buildParams(String userMessage, AiPrompt<?> selectedPrompt) {
         MessageCreateParams.Builder p = MessageCreateParams.builder()
                 .model(cfg.model())
                 .maxTokens(cfg.maxTokens())
-                .system(prompt.systemPrompt())
-                .addUserMessage(prompt.userMessage(input));
+                .system(selectedPrompt.systemPrompt())
+                .addUserMessage(userMessage);
 
         OutputConfig.Builder oc = null;
         OutputConfig.Effort effort = parseEffort(cfg.effort());
@@ -97,7 +101,7 @@ public class AnthropicStoryProvider implements StoryProvider, AutoCloseable {
             if (oc == null) {
                 oc = OutputConfig.builder();
             }
-            oc.format(JsonOutputFormat.builder().schema(schema(prompt.schema())).build());
+            oc.format(JsonOutputFormat.builder().schema(schema(selectedPrompt.schema())).build());
         }
         if (oc != null) {
             p.outputConfig(oc.build());
@@ -111,7 +115,12 @@ public class AnthropicStoryProvider implements StoryProvider, AutoCloseable {
 
     @Override
     public Story generate(Input input) throws StoryGenerationException, InterruptedException {
-        MessageCreateParams params = buildParams(input);
+        return generateContent(prompt.userMessage(input), prompt);
+    }
+
+    public <T> T generateContent(String userMessage, AiPrompt<T> selectedPrompt)
+            throws StoryGenerationException, InterruptedException {
+        MessageCreateParams params = buildParams(userMessage, selectedPrompt);
         CompletableFuture<Message> future = client.async().messages().create(params);
         Message msg;
         try {
@@ -142,7 +151,7 @@ public class AnthropicStoryProvider implements StoryProvider, AutoCloseable {
                 .flatMap(block -> block.text().stream())
                 .map(t -> t.text())
                 .collect(Collectors.joining());
-        return prompt.parse(text);
+        return selectedPrompt.parse(text);
     }
 
     /** 把 SDK 异常映射为三种业务错误码，并只记录状态与类型，不记录请求内容。 */

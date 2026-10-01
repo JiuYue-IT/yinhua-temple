@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-/** 会话接口（文档 04 §4.2—4.6）。成功响应直接返回 SessionSnapshot，不包 data 层。 */
+/** 会话接口（文档 04 §4.2—4.7）。成功响应直接返回 SessionSnapshot，不包 data 层。 */
 @RestController
 @RequestMapping("/api")
 public class SessionController {
@@ -41,6 +41,11 @@ public class SessionController {
     @PostMapping("/sessions/{id}/choice")
     public SessionSnapshot choose(@PathVariable String id, @Valid @RequestBody ChoiceRequest req) {
         return sessions.choose(id, req.optionId());
+    }
+
+    @PostMapping("/sessions/{id}/sign")
+    public SessionSnapshot sign(@PathVariable String id) {
+        return sessions.drawSign(id);
     }
 
     @PostMapping("/sessions/{id}/receipt")

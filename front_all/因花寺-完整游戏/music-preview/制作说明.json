@@ -1,0 +1,11 @@
+{
+  "duration_seconds": 72,
+  "sample_rate": 24000,
+  "stereo": true,
+  "method": "Original procedural synthesis; pentatonic plucked strings, breath flute, low bell, stereo reverb and water-like noise. No Suno API used.",
+  "tracks": [
+    "溪山入梦",
+    "花影寄愿",
+    "菩提静照"
+  ]
+}

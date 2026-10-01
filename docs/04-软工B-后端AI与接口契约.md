@@ -74,6 +74,15 @@
       "receiptDraft": {
         "insight": "独自承担所有困难，可能没有给合作留下调整的空间。",
         "nextStep": "如果仍想参与，询问朋友是否有边界清楚的小任务。"
+      },
+      "sign": {
+        "title": "先照见，再前行",
+        "verse": "心有所愿莫急求，先看脚下这一筹；知止而后能定，定而后能行。",
+        "preview": "若你继续隐瞒进度，短期或许还能保留独自解决的感觉，但问题可能在沉默中变重，队友也许更晚才有机会调整。",
+        "remedy": "若你已为这个选择后悔，不必立刻否定自己；先把卡点和可投入的时间写清楚，再向朋友提出一个两小时内能完成的小任务。",
+        "counsel": "佛家说观心而行：不以逞强为精进，也不以退缩为安稳。看见自己的限度，是对同行者的慈悲。",
+        "nextStep": "今天把当前卡点、可投入时间和一个最小任务发给朋友，请对方一起确认。",
+        "basis": "基于你想参与合作、又不愿耽误队友的愿心，以及当前每天两小时的限制。"
       }
     },
     {
@@ -84,6 +93,15 @@
       "receiptDraft": {
         "insight": "接受邀请后，仍然可以尝试协商自己的角色。",
         "nextStep": "向朋友询问一个适合当前能力与时间的小任务。"
+      },
+      "sign": {
+        "title": "量力而行",
+        "verse": "愿心不在声高低，行稳方知路远近；一灯照己，也照同行人。",
+        "preview": "若你说明困难并缩小范围，事情可能仍有取舍，朋友也可能重新安排分工；但更早说清条件，或许能让合作保留调整的余地。",
+        "remedy": "若你后悔当初拒绝或担心自己做得不够，不必追逐一个完美补偿；可以先问清一个边界明确的小任务，再决定是否加入。",
+        "counsel": "因缘各有时节，承担并不等于逞强。守住诚实与慈悲，既不轻看自己的能力，也不把难处推给他人。",
+        "nextStep": "向朋友发一条具体消息：说明每天两小时的限制，并询问是否有边界清楚的小模块。",
+        "basis": "基于你希望参与合作、避免拖累队友的目标，以及可投入时间有限这一事实。"
       }
     }
   ]
@@ -97,6 +115,7 @@
 - `options` 恰好两个，id 分别为 `A`、`B`，不能重复；label 1—50，outcome 1—220。
 - `reflection` 为 null 或完整对象；goal、concern、alternative 均非空且各不超过 120。
 - 每个选项都有 `receiptDraft`，insight、nextStep 均非空且各不超过 120。
+- `sign`（主殿签文）为 null 或完整对象：title 不超过 20，verse 不超过 120，preview / remedy / counsel / nextStep / basis 均非空且各不超过 220。`preview` 是对当前选择的可能性预演，`remedy` 是后悔时的补救而非替用户做决定，`counsel` 可用观心、无常、因缘等佛家意象但不做吉凶断言。旧故事没有 sign 时，抛签阶段由后端用 outcome / reflection / receiptDraft 拼一枚兜底签。
 - 真实故事不强制存在错误选项或回望；只有合理时生成。预置案例保证能演示回望。
 
 ### 3.3 SessionSnapshot
@@ -114,15 +133,17 @@
   },
   "story": null,
   "selectedOptionId": null,
+  "sign": null,
   "receipt": null,
   "error": null
 }
 ```
 
 - `mode`：`live` 或 `preset`。
-- `status`：`generating`、`ready`、`reflecting`、`ending`、`complete`、`error`。
+- `status`：`generating`、`ready`、`reflecting`、`ending`、`sign_drawing`、`sign_ready`、`complete`、`error`。
 - `story`：生成中为 null，成功后为 Story。
 - `selectedOptionId`：未选时 null，否则 `A` 或 `B`。
+- `sign`：`sign_ready` 之前为 null，之后为选中项的 `sign`（没有则为后端兜底签），一直保留到 complete。
 - `receipt`：确认前 null，确认后为下述 Receipt。
 - `error`：正常时 null，失败时为 `{ "code": "AI_TIMEOUT", "message": "生成超时，请重试或选择预置案例。" }`。
 
@@ -166,7 +187,7 @@ JSON 请求和响应；路径以 `/api` 开头。除 health 和 reset 外，成�
 }
 ```
 
-`aiConfigured` 只表示配置存在，不表示服务一定可用。设备 mode 为 `serial|dryrun`，status 为 `online|offline|dryrun`。`lastEvent` 初始为 null，否则为串口六种事件；`lastAck` 初始 null，或 `sent|accepted|done|cancelled|error|unknown`。
+`aiConfigured` 只表示配置存在，不表示服务一定可用。设备 mode 为 `serial|dryrun`，status 为 `online|offline|dryrun`。`lastEvent` 初始为 null，否则为串口事件之一（含 SIGN、SIGN_RESULT）；`lastAck` 初始 null，或 `sent|accepted|done|cancelled|error|unknown`。
 
 只有 hello 握手成功且连接有效才显示 online；收到 accepted 不能显示“摇签已完成”。设备仍有 USB 连接但某命令无回执时，lastAck 为 unknown，不能冒充完成。
 
@@ -217,7 +238,13 @@ JSON 请求和响应；路径以 `/api` 开头。除 health 和 reset 外，成�
 
 返回 `200` 和更新快照。不存在的选项返回 `400 INVALID_OPTION`；生成中、complete 或 error 返回 `409 INVALID_STATE`。
 
-### 4.5 POST /api/sessions/:id/receipt
+### 4.5 POST /api/sessions/:id/sign
+
+无请求体。进入主殿并开始抛签：只允许 reflecting、ending 状态调用，进入 `sign_drawing` 并发送 SIGN；约 700ms 后后端自动切到 `sign_ready`、写入 `sign` 并发送 SIGN_RESULT，前端通过 GET 轮询得到签文。已在 sign_drawing / sign_ready 时重复调用返回当前快照、不重复发事件。抛签期间不能改选，也不能确认收据。
+
+返回 `200` 和更新快照；ready、generating、complete 或 error 返回 `409 INVALID_STATE`。
+
+### 4.6 POST /api/sessions/:id/receipt
 
 ```json
 {
@@ -226,17 +253,17 @@ JSON 请求和响应；路径以 `/api` 开头。除 health 和 reset 外，成�
 }
 ```
 
-两个字段非空，各最多 200 字符，允许用户调整草稿。只在 reflecting 或 ending 中首次确认，进入 complete、保存 Receipt、发送一次 RECEIPT。
+两个字段非空，各最多 200 字符，允许用户调整草稿。只在 reflecting、ending 或 sign_ready 中首次确认（抛签不是必经步骤），进入 complete、保存 Receipt、发送一次 RECEIPT。
 
 complete 状态下相同内容重发返回已有快照，不重发事件；不同内容返回 `409 RECEIPT_ALREADY_CONFIRMED`。前端在完成后禁用编辑，修改需在确认前进行。
 
-### 4.6 POST /api/reset
+### 4.7 POST /api/reset
 
 无请求体。清除当前会话，取消或使旧生成任务失效，发送 RESET（连接可用时）。返回 `200 {"ok":true}`。设备离线不阻止清除软件会话。
 
 重复 reset 保持软件为空、硬件停止，不能触发 DRAW。重置后旧请求 ID 在当前进程中记为失效，重发返回 `409 REQUEST_EXPIRED`，防止旧网络请求重新创建体验。只保留本次演示必要数量的请求 ID，不保留私人输入。
 
-### 4.7 错误返回
+### 4.8 错误返回
 
 ```json
 {"error":{"code":"VALIDATION_ERROR","message":"请填写未选择的道路。"}}
@@ -288,11 +315,13 @@ AI 不判断舵机角度，也不生成串口命令。回望对象只描述 goal
 | 故事生成成功 | STORY |
 | 选择带回望的选项 | REFLECT |
 | 选择无回望的选项 | STORY |
+| 进入主殿抛签 | SIGN |
+| 签文出现 | SIGN_RESULT |
 | 第一次确认收据 | RECEIPT |
 | 生成失败 | ERROR |
 | 重置 | RESET |
 
-设备离线时继续软件流程，记录设备不可用；不把命令存成以后补发的动作队列。重连先握手，再发 RESET 使执行器停止，然后仅恢复当前显示：ready/ending→STORY，reflecting→REFLECT，complete→RECEIPT，error→ERROR；generating 保持待机，网页继续等待。绝不重放 DRAW。
+设备离线时继续软件流程，记录设备不可用；不把命令存成以后补发的动作队列。重连先握手，再发 RESET 使执行器停止，然后仅恢复当前显示：ready/ending→STORY，reflecting→REFLECT，sign_drawing→SIGN，sign_ready→SIGN_RESULT，complete→RECEIPT，error→ERROR；generating 保持待机，网页继续等待。绝不重放 DRAW。
 
 重连时每个命令依次写出；无需等待机械反馈才恢复网页。不能把旧会话的迟到事件发送给新会话。
 

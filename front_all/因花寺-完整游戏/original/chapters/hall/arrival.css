@@ -1,0 +1,8 @@
+/* The previous shot closes to this same warm darkness before navigation. */
+.arrival-transition{display:none;position:fixed;inset:0;z-index:80;overflow:hidden;pointer-events:none;background:transparent}
+.arrival-pending .arrival-transition{display:block;pointer-events:auto}
+.arrival-curtain,.arrival-edge{position:absolute;inset:0;pointer-events:none}
+.arrival-curtain{background:#160b08}
+.arrival-edge{opacity:0;background:radial-gradient(ellipse at 50% 52%,transparent 20%,rgba(22,11,8,.48) 64%,#160b08 100%)}
+.arrival-pending .scene{opacity:0}
+.arrival-pending .topbar,.arrival-pending .guide,.arrival-pending .hint,.arrival-pending .progress{opacity:0;pointer-events:none}

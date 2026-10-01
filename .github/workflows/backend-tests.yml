@@ -1,0 +1,27 @@
+name: Backend tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: server/pom.xml
+      - name: Check publication files and history
+        run: python3 tools/publication_audit.py
+      - name: Run tests without real AI or hardware
+        working-directory: server
+        run: bash ./mvnw -B test

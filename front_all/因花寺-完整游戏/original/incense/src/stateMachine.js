@@ -1,0 +1,4 @@
+export const STATES = ['TempleOverview','CameraMoving','IncenseReady','IntentionChoice','WaitingForSensor','SensorApproaching','Igniting','IncenseBurning','PlacingIncense','IncensePlaced','SmokeTransition','Completed'];
+const edges = {TempleOverview:['CameraMoving'],CameraMoving:['IncenseReady'],IncenseReady:['IntentionChoice'],IntentionChoice:['WaitingForSensor'],WaitingForSensor:['SensorApproaching','Igniting'],SensorApproaching:['WaitingForSensor','Igniting'],Igniting:['IncenseBurning'],IncenseBurning:['PlacingIncense'],PlacingIncense:['IncensePlaced'],IncensePlaced:['SmokeTransition'],SmokeTransition:['Completed'],Completed:[]};
+export function transition(state, next) { return edges[state]?.includes(next) ? next : state; }
+export const isSensing = state => ['WaitingForSensor','SensorApproaching'].includes(state);

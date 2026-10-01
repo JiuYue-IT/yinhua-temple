@@ -96,6 +96,28 @@ class AiProvidersTest {
     // ------------------------------------------------------------ Anthropic
 
     @Test
+    void directReadingUsesOneRequestAndOwnSchemaForBothProtocols() throws Exception {
+        var readingPrompt = new ReadingPrompt();
+        var wish = new com.lifebranch.server.model.WishInput("希望把项目做好", null, null, null, null);
+        String json = mapper.writeValueAsString(readingPrompt.preset());
+        responseBody = anthropicResponse(json, "end_turn");
+        try (var p = new AnthropicStoryProvider(cfg(AppProperties.AiProvider.ANTHROPIC, base, "x-api-key", true, 5), prompt)) {
+            var result = p.generateContent(readingPrompt.userMessage(wish), readingPrompt);
+            assertThat(result.summary().title()).isEqualTo("先行一小步");
+            assertThat(result.detail().understanding()).isNotBlank();
+        }
+        assertThat(lastBody.get().at("/output_config/format/schema/required").toString()).contains("summary", "detail");
+        assertThat(lastBody.get().path("messages").toString()).contains("concern");
+        assertThat(calls.get()).isEqualTo(1);
+        responseBody = mapper.writeValueAsString(Map.of("choices", java.util.List.of(Map.of("finish_reason", "stop", "message", Map.of("content", json)))));
+        var p = new OpenAiStoryProvider(cfg(AppProperties.AiProvider.OPENAI, base + "/v1", "bearer", true, 5), prompt);
+        var result = p.generateContent(readingPrompt.userMessage(wish), readingPrompt);
+        assertThat(result.detail().nextStep()).isNotBlank();
+        assertThat(lastBody.get().path("messages").toString()).contains("summary", "concern");
+        assertThat(calls.get()).isEqualTo(2);
+    }
+
+    @Test
     void anthropicRequestShapeAndSuccess() throws Exception {
         responseBody = anthropicResponse(storyJson, "end_turn");
         try (AnthropicStoryProvider p = new AnthropicStoryProvider(
@@ -206,6 +228,23 @@ class AiProvidersTest {
         assertThat(body.path("messages").path(0).path("role").asText()).isEqualTo("system");
         assertThat(body.path("messages").path(1).path("content").asText()).contains("两份工作");
         assertThat(body.path("response_format").path("type").asText()).isEqualTo("json_object");
+        assertThat(body.has("thinking")).isFalse();
+    }
+
+    @Test
+    void optionalOpenAiThinkingPreservesStructuredReading() throws Exception {
+        var readingPrompt = new ReadingPrompt();
+        var wish = new com.lifebranch.server.model.WishInput("希望把项目做好", null, null, null, null);
+        responseBody = openAiResponse(mapper.writeValueAsString(readingPrompt.preset()), "stop");
+        for (String thinking : java.util.List.of("disabled", "enabled")) {
+            var config = new AppProperties.Ai(AppProperties.AiProvider.OPENAI, base + "/v1", "test-key", "kimi-k2.6",
+                    "bearer", "low", true, true, 16000, 5, 30, thinking);
+            var provider = new OpenAiStoryProvider(config, prompt);
+            var reading = provider.generateContent(readingPrompt.userMessage(wish), readingPrompt);
+            assertThat(lastBody.get().at("/thinking/type").asText()).isEqualTo(thinking);
+            assertThat(lastBody.get().at("/response_format/type").asText()).isEqualTo("json_object");
+            assertThat(com.lifebranch.server.story.ReadingValidator.validate(reading)).isEmpty();
+        }
     }
 
     @Test

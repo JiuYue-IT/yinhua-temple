@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN"><head><script src="../../../silence.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#83b8b6"><title>许愿池 · 寄愿</title><link rel="stylesheet" href="style.css"><link rel="preload" as="image" href="assets/scene.webp"><link rel="stylesheet" href="scene-bridge.css"><script src="main.js" defer></script><script src="../vendor/gsap.min.js" defer></script><script src="daxiong-bridge.js" defer></script><link rel="stylesheet" href="arrival.css"><script src="arrival.js" defer></script><style id="pb-embed-hide-chrome">#pb-host-splash,#pb-host-banner,#pb-host-badge,#pb-host-mark,#pb-host-widget,#pb-host-mask{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}</style><script src="../../../api.js"></script><script src="../../../reading-ui.js"></script><link rel="stylesheet" href="../../../reading-ui.css"></head>
+<body data-state="arrival">
+<main id="experience" aria-label="许愿池，寄一枚心愿">
+ <div id="scene" aria-hidden="true"><img class="backdrop" src="assets/scene.webp" alt=""><img class="water" src="assets/water.webp" alt=""><div class="temple-light"></div><img class="trees" src="assets/trees.webp" alt=""><div id="petals"></div></div>
+ <div class="shade"></div><div id="ripples" aria-hidden="true"></div>
+ <header class="chapter"><span class="seal">愿</span><span>许愿池<span class="chapter-line"></span>寄愿</span></header>
+ <button id="sound" class="sound" aria-label="开启水声与投币音效" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="soundLabel">听水</span></button>
+ <section class="opening" id="opening"><p class="eyebrow">一池春水，静候心愿</p><h1>若心中有所愿，<br>可投一枚。</h1><button class="text-action" id="approach">走近许愿池 <span aria-hidden="true">↓</span></button></section>
+ <section id="ritual" class="ritual" hidden aria-labelledby="ritualTitle"><h2 id="ritualTitle" tabindex="-1"></h2><p id="subtitle"></p>
+  <div id="choices" class="choices" hidden><button id="speak">◯ <span>说出来</span></button><span class="choice-divider"></span><button id="write">✎ <span>写下来</span></button></div>
+  <form id="writing" hidden><div class="paper"><textarea id="wish" maxlength="800" placeholder="愿……" aria-label="写下你的愿望，最多400字" rows="3"></textarea><span id="count">还可写 400 字</span></div><button class="text-action" id="keep" type="submit">收好这个愿 <span aria-hidden="true">↗</span></button><button type="button" id="wishPreset" class="text-action" hidden>查看预置案例演示</button></form>
+  <div id="voice" hidden><button id="microphone" class="microphone" aria-label="开始说"><i></i><i></i><i></i><span></span></button><p id="transcript" aria-live="polite"></p><button id="voiceAction" class="text-action">开始说</button><div id="voiceConfirm" class="choices" hidden><button id="confirmVoice">就这样</button><button id="retryVoice">重新说</button></div><button id="voiceFallback" class="back-action">换成写下来</button></div>
+  <button id="back" class="back-action" hidden>换一种方式</button>
+ </section>
+ <button id="coin" class="coin" hidden aria-label="拿起一枚铜钱"><img src="assets/coin.webp" draggable="false" alt="樱花铜钱"><img class="holding-art" src="assets/holding-coin.png" draggable="false" alt="手持樱花铜钱"><span id="coinCaption">拾起一枚</span></button>
+ <button id="target" class="target" hidden aria-label="将铜钱投入池水"><i></i><i></i><span>把愿，轻轻放下</span></button>
+ <div id="wishFlight" class="wish-flight" aria-hidden="true"></div><img id="flyingCoin" class="flying-coin" src="assets/coin.webp" alt="" hidden>
+ <section id="ending" class="ending" hidden><p class="ending-small">愿已入水。</p><h2>既已许下，<br>便先往前走吧。</h2><p>有些答案，要走一段路才会出现。</p><div class="choices"><button id="continue">继续往前 <span aria-hidden="true">↗</span></button><button id="again">再寄一愿</button></div></section>
+ <div class="footer"><span id="hint">风过樱梢，水自无言。</span><span class="ritual-steps"><b id="step1">说出</b><i></i><b id="step2">收起</b><i></i><b id="step3">寄托</b><i></i><b id="step4">放下</b></span></div>
+ <p id="notice" role="status"></p>
+</main><div id="hand" aria-hidden="true"><img src="assets/hand-point.webp" alt=""></div><section id="sceneBridge" class="scene-bridge" aria-label="前往无问殿" aria-hidden="true">
+  <img id="sceneBridgeStart" class="bridge-frame" src="../assets/wishing-to-daxiong-end.png" alt="">
+  <video id="sceneBridgeVideo" class="bridge-frame" muted playsinline preload="auto" poster="../assets/wishing-to-daxiong-end.png" src="../assets/wishing-to-daxiong.mp4"></video>
+  <div class="bridge-facade">
+    <img id="sceneBridgeEnd" class="bridge-facade-image" src="../assets/wishing-to-daxiong-start.png" alt="">
+    <div class="bridge-facade-shade"></div>
+    <img class="scene-bridge-plaque" src="../assets/plaque-wuwen.png" alt="无问殿匾额">
+  </div>
+  <div class="bridge-vignette" aria-hidden="true"></div>
+  <div class="bridge-veil" aria-hidden="true"></div>
+  <p class="scene-bridge-copy" role="status">一池心愿，行向无问殿</p>
+  <button class="bridge-skip" type="button">直接入殿 <span aria-hidden="true">→</span></button>
+</section><noscript>请启用 JavaScript，体验许愿与投币。</noscript>
+</body></html>

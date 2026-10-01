@@ -24,11 +24,11 @@ class ContractJsonTest {
     void generatingSnapshotKeepsNullFields() throws Exception {
         Input in = new Input("背景", "拒绝邀请", "接受邀请", "目标");
         SessionSnapshot s = new SessionSnapshot("s-001", SessionMode.LIVE, SessionStatus.GENERATING,
-                in, null, null, null, null);
+                in, null, null, null, null, null);
         JsonNode j = mapper.readTree(mapper.writeValueAsString(s));
         assertThat(j.get("mode").asText()).isEqualTo("live");
         assertThat(j.get("status").asText()).isEqualTo("generating");
-        for (String f : List.of("story", "selectedOptionId", "receipt", "error")) {
+        for (String f : List.of("story", "selectedOptionId", "sign", "receipt", "error")) {
             assertThat(j.has(f)).as(f).isTrue();
             assertThat(j.get(f).isNull()).as(f).isTrue();
         }

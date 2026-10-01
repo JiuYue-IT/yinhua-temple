@@ -1,0 +1,8 @@
+.reading-status {font:16px/1.8 SimSun,serif;color:inherit;text-align:center;padding:16px 0;}
+.reading-status[hidden] {display:none;}
+.reading-status button {font:inherit;color:inherit;border:1px solid currentColor;background:transparent;border-radius:4px;padding:8px 14px;margin:8px;cursor:pointer;}
+.reading-mode {font-size:13px;opacity:.75;line-height:1.7;}
+.reading-details {text-align:left;line-height:1.85;font:16px/1.85 SimSun,serif;}
+.reading-details h3 {font-size:17px;margin:22px 0 6px;}
+.reading-details p {margin:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+.reading-details .reading-basis {font-size:13px;opacity:.75;margin-top:20px;}

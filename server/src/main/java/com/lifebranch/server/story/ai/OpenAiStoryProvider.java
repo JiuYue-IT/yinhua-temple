@@ -56,12 +56,19 @@ public class OpenAiStoryProvider implements StoryProvider {
     }
 
     String buildBody(Input input) throws IOException {
+        return buildBody(prompt.userMessage(input), prompt);
+    }
+
+    private String buildBody(String userMessage, AiPrompt<?> selectedPrompt) throws IOException {
         ObjectNode body = mapper.createObjectNode();
         body.put("model", cfg.model());
         body.put("max_tokens", cfg.maxTokens());
+        if (cfg.openaiThinking() != null && !cfg.openaiThinking().isBlank()) {
+            body.putObject("thinking").put("type", cfg.openaiThinking());
+        }
         ArrayNode messages = body.putArray("messages");
-        messages.addObject().put("role", "system").put("content", prompt.systemPrompt());
-        messages.addObject().put("role", "user").put("content", prompt.userMessage(input));
+        messages.addObject().put("role", "system").put("content", selectedPrompt.systemPrompt());
+        messages.addObject().put("role", "user").put("content", userMessage);
         if (cfg.structuredOutput()) {
             body.putObject("response_format").put("type", "json_object");
         }
@@ -70,13 +77,18 @@ public class OpenAiStoryProvider implements StoryProvider {
 
     @Override
     public Story generate(Input input) throws StoryGenerationException, InterruptedException {
+        return generateContent(prompt.userMessage(input), prompt);
+    }
+
+    public <T> T generateContent(String userMessage, AiPrompt<T> selectedPrompt)
+            throws StoryGenerationException, InterruptedException {
         HttpRequest req;
         try {
             req = HttpRequest.newBuilder(uri)
                     .timeout(Duration.ofSeconds(cfg.requestTimeoutSeconds()))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + cfg.apiKey())
-                    .POST(HttpRequest.BodyPublishers.ofString(buildBody(input), StandardCharsets.UTF_8))
+                    .POST(HttpRequest.BodyPublishers.ofString(buildBody(userMessage, selectedPrompt), StandardCharsets.UTF_8))
                     .build();
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -133,7 +145,7 @@ public class OpenAiStoryProvider implements StoryProvider {
             log.warn("AI 输出被内容过滤");
             throw StoryGenerationException.unavailable();
         }
-        return prompt.parse(choice.path("message").path("content").asText(null));
+        return selectedPrompt.parse(choice.path("message").path("content").asText(null));
     }
 
     /** 错误响应体可能包含中转站诊断信息，但不会包含用户背景；仍截断以免刷屏。 */

@@ -1,0 +1,5 @@
+html{background:#f1f1e9}
+.pool-arrival-smoke{position:fixed;inset:0;z-index:10000;background:#f1f1e9;pointer-events:auto;opacity:1;transition:opacity 2.2s ease-in-out}
+.pool-arrival-smoke::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 25% 60%,#d6e2d46b,transparent 45%),radial-gradient(ellipse at 70% 35%,#fffbebc2,transparent 47%)}
+.pool-arrival-smoke.reveal{opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.pool-arrival-smoke{transition-duration:.3s}}

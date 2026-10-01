@@ -3,6 +3,7 @@ package com.lifebranch.server.config;
 import com.lifebranch.server.model.DeviceMode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 /**
  * 全部外部配置。值来自环境变量（见 application.yml），密钥不写入仓库。
@@ -38,8 +39,25 @@ public record AppProperties(Ai ai, Device device, @DefaultValue Preset preset) {
             @DefaultValue("true") boolean structuredOutput,
             @DefaultValue("true") boolean refusalFallback,
             @DefaultValue("16000") long maxTokens,
-            @DefaultValue("25") int requestTimeoutSeconds,
-            @DefaultValue("30") int taskTimeoutSeconds) {
+            @DefaultValue("60") int requestTimeoutSeconds,
+            @DefaultValue("65") int taskTimeoutSeconds,
+            String openaiThinking) {
+
+        @ConstructorBinding
+        public Ai {
+            if (openaiThinking != null && !openaiThinking.isBlank()
+                    && !openaiThinking.equals("enabled") && !openaiThinking.equals("disabled")) {
+                throw new IllegalArgumentException("AI_OPENAI_THINKING 必须为空、enabled 或 disabled");
+            }
+        }
+
+        /** 保留已有调用；默认不发送服务商特有的 thinking 参数。 */
+        public Ai(AiProvider provider, String endpoint, String apiKey, String model, String authHeader,
+                  String effort, boolean structuredOutput, boolean refusalFallback, long maxTokens,
+                  int requestTimeoutSeconds, int taskTimeoutSeconds) {
+            this(provider, endpoint, apiKey, model, authHeader, effort, structuredOutput, refusalFallback,
+                    maxTokens, requestTimeoutSeconds, taskTimeoutSeconds, null);
+        }
 
         /** 只表示必要配置都存在，不代表服务一定可用。 */
         public boolean configured() {
@@ -54,7 +72,7 @@ public record AppProperties(Ai ai, Device device, @DefaultValue Preset preset) {
                     + ", authHeader=" + authHeader + ", effort=" + effort + ", structuredOutput=" + structuredOutput
                     + ", refusalFallback=" + refusalFallback + ", maxTokens=" + maxTokens
                     + ", requestTimeoutSeconds=" + requestTimeoutSeconds
-                    + ", taskTimeoutSeconds=" + taskTimeoutSeconds + "]";
+                    + ", taskTimeoutSeconds=" + taskTimeoutSeconds + ", openaiThinking=" + openaiThinking + "]";
         }
     }
 
