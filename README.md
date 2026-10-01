@@ -45,11 +45,11 @@ Set-Location server
 
 ## 开发与协作
 
-参与开发、分支、验证及 PR 要求见 [CONTRIBUTING.md](CONTRIBUTING.md)。后端测试执行 `server/mvnw.cmd test`，GitHub Actions 也会执行相同测试；浏览器加载检查及完整流程测试见协作指南。
+仓库分支、提交和合并步骤见 [仓库操作指南](docs/仓库操作指南.md)。日常开发从 `develop` 创建新分支，先推送新分支，再提 PR 到 `develop`，检查通过后合并。`main` 保留稳定版本，由 `develop` 提 PR 更新。运行和验证说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-当前后端仅保留一个活动会话，适合本地和单组演示；多人同时在线使用需要后续改造会话隔离。当前还有视觉及交互待办，见 [待解决方案](docs/10-AI连接修复与前端性能优化方案.md)。
+当前后端仅保留一个活动会话，适合本地和单组演示；多人同时在线使用需要后续改造会话隔离。当前视觉及交互问题见 [待办](docs/10-待办.md)。
 
-第三方代码和素材说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。开源发布准备及待确认事项见 [发布清单](docs/11-开源准备与清理清单.md)。
+第三方代码和素材说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 项目自有代码采用 [MIT License](LICENSE)，允许使用、修改、分发及商用，需保留版权和许可证声明。第三方组件和媒体素材遵循各自授权，详见第三方说明。
 
