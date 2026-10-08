@@ -8,7 +8,8 @@
   class ApiError extends Error {
     constructor(message, code, status = 0) { super(message); this.code = code; this.status = status; }
   }
-  const base = String(window.TEMPLE_API_BASE || '').replace(/\/+$/, '');
+  const localPreview = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port === '57157';
+  const base = String(window.TEMPLE_API_BASE ?? (localPreview ? 'http://127.0.0.1:8080' : '')).replace(/\/+$/, '');
   const KEY = 'temple.direct-session';
   let saved = null;
   try { saved = JSON.parse(sessionStorage.getItem(KEY)); } catch {}

@@ -29,6 +29,6 @@ export default function SmokeTransition({origin,onCovered,onReplay,completed}) {
   <svg className="final-smoke-threads" viewBox="0 0 600 600" style={{left:origin.x,top:origin.y}} aria-hidden="true"><defs><filter id="final-wisp"><feGaussianBlur stdDeviation="6"/></filter></defs><g filter="url(#final-wisp)" fill="none" stroke="#f1f0e8" strokeWidth="13">{[-1,0,1].map(i=><path key={i} d={`M${300+i*22} 590 C${200+i*40} 460 ${380+i*30} 360 300 290 S${190+i*60} 140 ${300+i*65} 10`}/>)}</g></svg>
   {Array.from({length:9},(_,i)=><div key={i} className={`final-smoke-cloud cloud-${i%3}`} aria-hidden="true"/>)}
   <div className="final-smoke-opaque" aria-hidden="true"><div className="final-smoke-drift"/></div>
-  {completed&&<div className="final-smoke-rest" aria-live="polite"><p>一炷心香，万念归静。</p><button onClick={onReplay}>再上一炷香</button></div>}
+  {completed&&<div className="final-smoke-rest" aria-live="polite"><p>一炷心香，不是忘掉心事。只是让它，暂且有一个安放的地方。</p><button onClick={onReplay}>再上一炷香</button></div>}
  </div>,document.body);
 }

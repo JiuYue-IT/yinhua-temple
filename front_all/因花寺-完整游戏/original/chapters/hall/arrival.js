@@ -67,8 +67,8 @@
       const restTransform = scene.style.transform || 'scale(1) translateY(0%)';
       const restFilter = scene.style.filter || 'brightness(1) saturate(1)';
       animate(scene, [
-        {opacity: 1, transform: reduced ? restTransform : 'scale(.965) translateY(.7%)', filter: 'brightness(.62) saturate(.84)'},
-        {opacity: 1, transform: restTransform, filter: restFilter}
+        {opacity: 1, transform: reduced ? restTransform : 'scale(.965) translateY(.7%)', },
+        {opacity: 1, transform: restTransform, }
       ], {duration, easing: 'cubic-bezier(.2,.7,.25,1)'});
       animate(curtain, [
         {opacity: 1, offset: 0},

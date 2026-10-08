@@ -31,3 +31,6 @@ body[data-state=ready] .coin span{display:none}
 .ritual #subtitle{color:#f5e8ce;opacity:1}
 
 .chapter .seal{background:transparent url('../../../assets/flower-logo.png') center/contain no-repeat;border:0;width:38px;height:38px;font-size:0;color:transparent;flex-shrink:0}
+
+/* Keep water-overlay actions readable regardless of automatic scene contrast. */
+#experience #writing .text-action,#experience #back,#experience #voice .text-action,#experience #voice .back-action{color:#fff9ed!important;text-shadow:0 1px 3px #183e34e6,0 2px 12px #183e3499;border-color:#fff9ed80;opacity:1}

@@ -1,0 +1,32 @@
+:root{--temple-font:"Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;--temple-ink:#29483e;--temple-paper:#fff6e6;--temple-gold:#e9cb91;--temple-body:clamp(15px,1.15vw,18px);--temple-title:clamp(25px,3vw,40px)}
+body,button,input,textarea{font-family:var(--temple-font)}
+button{min-height:44px;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:2px solid var(--temple-gold);outline-offset:5px}
+.prologue-copy{width:min(86vw,760px);height:220px;font:clamp(18px,1.65vw,25px)/2.1 var(--temple-font);letter-spacing:.08em;text-wrap:balance}
+.prologue-copy p{padding:20px 12px}
+.prologue>button{font-size:14px;letter-spacing:.12em}
+.passage-hint{position:absolute;bottom:25px;left:10%;width:80%;text-align:center;color:var(--temple-paper);text-shadow:0 2px 7px #193c2c;font-size:var(--temple-body)}
+.passage-controls{position:absolute;right:24px;top:26px;display:flex;gap:10px}
+.passage-controls button,#courtyard button,.journey-end button,.ritual-advance{padding:12px 20px;background:#294736d9;color:var(--temple-paper);border:1px solid #efdbab80;border-radius:5px;font-size:var(--temple-body);letter-spacing:.08em}
+#courtyard button{bottom:max(35px,6vh);white-space:nowrap}
+.chapter-veil{position:absolute;inset:0;z-index:4;background:#eeeee4;display:grid;place-content:center;text-align:center;color:var(--temple-ink);transition:opacity .65s;opacity:1}
+.chapter-veil[hidden]{display:none}.chapter-veil.revealing{opacity:0;pointer-events:none}
+.chapter-veil p{font-size:var(--temple-body);letter-spacing:.12em}.chapter-veil button{padding:12px 20px;color:inherit;background:transparent;border:1px solid currentColor;border-radius:5px}
+.journey-end{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:24px;padding:30px;color:var(--temple-paper);background:#213d3c}.journey-end h2{font-size:var(--temple-title);font-weight:400}.journey-end p{font-size:var(--temple-body);line-height:1.9;text-wrap:balance}
+.reading-panel,.action-overlay,.sign-sheet{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.lot-closeup img{filter:saturate(.9) brightness(.68)!important}
+.reading-details,.reading-text,.sign-sheet p{font-size:var(--temple-body);line-height:1.9;overflow-wrap:anywhere}
+.reading-title,.sign-sheet h2{font-size:var(--temple-title);line-height:1.45;font-weight:400}
+.ritual-advance{position:fixed;right:max(22px,env(safe-area-inset-right));bottom:max(80px,12vh);z-index:32}.ritual-advance[hidden]{display:none}
+.final-smoke-cloud{filter:none!important;will-change:transform,opacity}.final-smoke-threads{display:none!important}.final-smoke-drift{animation:none!important;filter:none!important}.final-smoke-opaque{background:#eeeee4!important}
+@media(max-width:650px){.prologue-copy{width:90vw;font-size:18px;line-height:2}.passage-controls{top:20px;right:14px;gap:8px}.passage-controls button{font-size:13px;padding:10px 12px}.ritual-advance{right:16px;bottom:90px;font-size:14px}.journey-end p{max-width:28ch}}
+@media(prefers-reduced-motion:reduce){.chapter-veil{transition-duration:.1s}}
+
+.king-label-rail{position:absolute;top:max(85px,12%);left:0;width:100%;z-index:25;pointer-events:none;text-align:center}.king-label-rail .king-name{position:absolute;top:0;left:50%;right:auto;writing-mode:horizontal-tb;transform:translateX(-50%);font-size:clamp(12px,1.2vw,16px);padding:8px 16px;line-height:1.6;background:#20372be8;backdrop-filter:none;letter-spacing:.12em;min-height:0}
+
+body[data-state=ready] #target{z-index:12}.hint .mouse{display:none}.pool-arrival-smoke{background:#eeeee4;transition-duration:.65s}
+
+.sign-sheet{background:rgba(255,248,238,.96)!important}.reading-shell{line-height:1.9}
+
+#mapToggle.chapter-map-dock .map-tooltip{top:auto;bottom:60px;left:auto;right:0;transform:none}.sign-sheet{max-height:calc(100svh - 160px)!important;min-height:0!important}
+
+#courtyardPassage .passage-hint{bottom:28px;margin:0;pointer-events:none;display:flex;justify-content:center}.passage-wheel-icon{width:64px;height:94px;display:flex;align-items:center;flex-direction:column;padding-top:17px;gap:9px;border-radius:40px;background:#eaf4df12;backdrop-filter:blur(5px);border:1px solid #ffffee24;color:#fff9eb;filter:drop-shadow(0 2px 4px #102b30)}.passage-mouse{width:25px;height:39px;border:1.5px solid currentColor;border-radius:15px;position:relative}.passage-mouse i{position:absolute;width:3px;height:7px;left:9.5px;top:7px;border-radius:3px;background:currentColor;animation:passage-wheel 1.9s ease-in-out infinite}.passage-chevrons{display:grid;gap:4px}.passage-chevrons i{width:7px;height:7px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:passage-arrow 1.9s infinite}.passage-chevrons i+i{animation-delay:.22s}@keyframes passage-wheel{0%{opacity:0;transform:translateY(0)}25%{opacity:1}75%{opacity:.8;transform:translateY(9px)}100%{opacity:0;transform:translateY(11px)}}@keyframes passage-arrow{0%,100%{opacity:.12}45%{opacity:.9}}@media(prefers-reduced-motion:reduce){.passage-mouse i,.passage-chevrons i{animation:none}}

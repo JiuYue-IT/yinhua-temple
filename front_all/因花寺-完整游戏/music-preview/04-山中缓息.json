@@ -1,0 +1,8 @@
+{
+  "duration": 96,
+  "sample_rate": 24000,
+  "peak": 0.32,
+  "rms": 0.09073217584845647,
+  "seam_delta": 0.013946089067573553,
+  "description": "Original periodic sustained harmonic synthesis; no percussion, no noise, no voice."
+}

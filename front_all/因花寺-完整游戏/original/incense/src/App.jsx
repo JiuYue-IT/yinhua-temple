@@ -52,7 +52,7 @@ function Ritual({onReplay,onSceneComplete}) {
   switch(state){
    case 'TempleOverview':gsap.set(incense.current,{yPercent:-100,y:80});tl.to({}, {duration:1.25}).call(()=>go('CameraMoving'));break;
    case 'CameraMoving':tl.to(camera.current,{scale:1.65,xPercent:0,yPercent:0,duration:duration(2.8),ease:'power2.inOut'}).to(veil.current,{opacity:.26,duration:duration(2.8)},0).call(()=>go('IncenseReady'));break;
-   case 'IncenseReady':tl.to({}, {duration:.5}).to(incense.current,{opacity:1,y:0,duration:duration(.8),ease:'power2.out'});text('取三炷香');tl.to(hint.current,{opacity:0,delay:1.5,duration:.5}).call(()=>go('IntentionChoice'));break;
+   case 'IncenseReady':tl.to({}, {duration:.5}).to(incense.current,{opacity:1,y:0,duration:duration(.8),ease:'power2.out'});text('取三炷香。第一炷，敬过去。第二炷，敬未来。第三炷，敬此刻。');tl.to(hint.current,{opacity:0,delay:5,duration:.5}).call(()=>go('IntentionChoice'));break;
    case 'IntentionChoice':tl.to(veil.current,{opacity:.66,duration:1.2});break;
    case 'WaitingForSensor':tl.to(veil.current,{opacity:.26,duration:1});text('将香移近炉火');if(hardwareBridge.detected){active.current=true;tl.call(()=>go('SensorApproaching'));}break;
    case 'SensorApproaching':text('再近一些');break;
@@ -70,9 +70,9 @@ function Ritual({onReplay,onSceneComplete}) {
       .to(incense.current,{top:'74%',duration:duration(1.15),ease:'power2.inOut'})
       .call(()=>go('IncensePlaced'));
     break;
-   case 'IncensePlaced':playSound('settle');tl.to({}, {duration:1});text('香已入炉，心事可问。');tl.to(hint.current,{opacity:0,delay:1.5,duration:.6}).call(()=>go('SmokeTransition'));break;
+   case 'IncensePlaced':playSound('settle');tl.to({}, {duration:1});text('香已入炉。心事可问。');tl.to(hint.current,{opacity:0,delay:1.5,duration:.6}).call(()=>go('SmokeTransition'));break;
    case 'SmokeTransition':{const rect=incense.current.querySelector('.stick-1 .ember').getBoundingClientRect();setSmokeOrigin({x:rect.left+rect.width/2,y:rect.top});break;}
-   case 'Completed':if(!sent.current){sent.current=true;onSceneComplete?.({intention});window.dispatchEvent(new CustomEvent('temple:scene-complete',{detail:{intention}}));window.parent.postMessage({type:'incense-complete'},location.origin);}break;
+   case 'Completed':if(!sent.current){sent.current=true;onSceneComplete?.({intention});window.dispatchEvent(new CustomEvent('temple:scene-complete',{detail:{intention}}));}break;
   }
   return()=>tl.kill();
  },[state,ready,inserting,go,onSceneComplete]);
@@ -96,6 +96,7 @@ function Ritual({onReplay,onSceneComplete}) {
    <Incense ref={incense} burning={burning} igniting={state==='Igniting'} interactive={state==='PlacingIncense'&&!inserting} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancel} onKeyDown={e=>{if(e.key==='Enter'||e.code==='Space'){e.preventDefault();place();}}}/>
    <div className={`burner-front ${inserting?'visible-front':''}`} aria-hidden="true"><img src="./assets/burner.png"/></div>
    <div className={`sensor-aura ${sensing?'active':''}`} aria-hidden="true"><svg viewBox="0 0 400 160"><defs><radialGradient id="warm"><stop stopColor="#ffd8a0" stopOpacity=".7"/><stop offset="1" stopColor="#ffd8a0" stopOpacity="0"/></radialGradient></defs><ellipse cx="200" cy="95" rx="195" ry="60" fill="url(#warm)"/>{[0,1,2,3,4].map(i=><circle key={i} className="gold-mote" cx={160+i*20} cy="30" r="1.5" style={{animationDelay:`${i*.4}s`}}/>)}</svg></div>
+   {DEBUG_HARDWARE&&sensing&&<button className="ritual-advance incense-ignite" onClick={()=>hardwareBridge.triggerIgnite()}>点燃心香</button>}
    {DEBUG_HARDWARE&&sensing&&<div className="sensor-zone" aria-hidden="true" onPointerEnter={()=>hardwareBridge.onSensorEnter()} onPointerLeave={()=>hardwareBridge.onSensorLeave()} onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);hardwareBridge.onSensorEnter();}} onPointerUp={()=>hardwareBridge.onSensorLeave()} onPointerCancel={()=>hardwareBridge.onSensorLeave()}/>}
    {state==='IntentionChoice'&&<IntentionChoice onComplete={choice=>{setIntention(choice);hardwareBridge.reset();active.current=false;heat.current.value=0;go('WaitingForSensor');}}/>}
    <p ref={hint} className="ritual-hint pointer-events-none" aria-live="polite"/>

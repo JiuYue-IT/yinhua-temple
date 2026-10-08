@@ -151,7 +151,7 @@
     @media(max-width:700px){.topbar{padding:17px}.brand{font-size:12px}.guide{top:13%}.progress{right:14px}.hint{bottom:20px}.hands{width:92vw;height:55vh}.pad-hotspot{width:58vw;height:32vw}}
     @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
-<style id="pb-embed-hide-chrome">#pb-host-splash,#pb-host-banner,#pb-host-badge,#pb-host-mark,#pb-host-widget,#pb-host-mask{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}</style><script src="../../../api.js"></script><script src="../../../reading-ui.js"></script><link rel="stylesheet" href="../../../reading-ui.css"></head>
+<style id="pb-embed-hide-chrome">#pb-host-splash,#pb-host-banner,#pb-host-badge,#pb-host-mark,#pb-host-widget,#pb-host-mask{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}</style><script src="../../../api.js"></script><script src="../../../reading-ui.js"></script><link rel="stylesheet" href="../../../reading-ui.css"><link rel="stylesheet" href="../../../experience-theme.css?v=20261006"></head>
 <body>
   <main class="experience" id="experience" aria-label="礼佛互动场景">
     <div class="scene" id="scene">
@@ -253,19 +253,19 @@
   let state='approach', approach=0, bow=0, hold=0, holding=false, lastWheel=0, audioOn=true, audioCtx, raf, autoMoving=false, posture='standing';
   let shakeDistance=0,lastPointer=null,pointerId=null,readingIndex=0,flowTimers=[],bridgeDuration=5.084;
   const texts={
-    approach:['入 殿','一念清净','滚动鼠标，缓步走向殿前拜垫'],
-    arrive:['礼 佛','合掌','轻按或长按画面，让双手合十'],
-    bow:['礼 佛','一拜','向下滚动低头 · 向上滚动起身'],
-    reveal:['显 灵','心有所愿','佛光已现，愿此刻心念澄明'],
+    approach:['礼 佛','一念清净','殿内无言。心有所愿。先让这一念安静下来。'],
+    arrive:['礼 佛','合掌。','先让这一念安静下来。'],
+    bow:['礼 佛','一拜。','把急于得到答案的念头，暂时放下。'],
+    reveal:['礼 佛','佛光已现。','愿此刻心念澄明。'],
     bridge:['回 殿','回到这一念。','继续向下滚动，走过这一段回应'],
-    return1:['回 殿','把许下的心事，带回这一念。',''],
-    return2:['回 殿','现在，回来看看这一念。','签不替你决定，只照见此刻。'],
-    shaking:['抽 签','慢一点。','按住签筒，轻轻左右摇动'],
+    return1:['回 殿','回到这一念。','如果仍有所问，'],
+    return2:['抽 签','摇一签。','靠近签筒。'],
+    shaking:['抽 签','慢慢摇动。','这一念还在筒中回旋。'],
     waiting:['抽 签','这一念还在筒中回旋。',''],
     waiting2:['抽 签','再等一息。',''],
     dropReady:['抽 签','让它落下来。','再摇一下。'],
     signDrop:['落 签','签已落下。',''],
-    signDrop2:['落 签','但它不是命定，只是一盏提醒。','点击签条，揭开这一念'],
+    signDrop2:['落 签','它不是命定，只是一盏提醒。','点击签条，揭开这一念。'],
     signReveal:['揭 签','照见这一念','它不是命定，只是一盏提醒。'],
     action:['归 现实','签已看完。','答案仍在你手里。']
   };
@@ -348,7 +348,7 @@
     const run=readingEpoch;
     const snap=await TempleFlow.drawSign();if(run!==readingEpoch)return;
     const summary=snap.reading.summary;
-    readingSteps.splice(0,readingSteps.length,['签面短偈',summary.title,summary.verse],['此刻一念',summary.title,summary.message]);
+    readingSteps.splice(0,readingSteps.length,['照见这一念',summary.title,summary.verse],['我看见了什么？',summary.title,summary.message]);
     lotSign.querySelector('.sign-back b').textContent=summary.title;
     signStatus.hide();readingPanel.classList.remove('show');readingNext.hidden=false;readingDots.forEach((dot,i)=>dot.hidden=i>=readingSteps.length);
     state='dropReady';dropResolvedSign();
@@ -359,8 +359,9 @@
     try{await obtainSign();}catch(error){signStatus.error(error);}finally{signBusy=false;}
   }
   function dropResolvedSign(){state='signDrop';lotTube.classList.remove('picked','drop-ready');lotTube.style.removeProperty('--tube-rotate');screenDim.classList.add('on');lotSign.classList.add('visible','fallen');hint.style.opacity='0';setText('signDrop');tapSound();later(()=>{if(state!=='signDrop')return;setText('signDrop2');},950)}
+  const realityNote=document.createElement('p');realityNote.id='readingRealityNote';realityNote.textContent='我接下来愿意做的一小步？真正的下一步，仍在你的现实里。';realityNote.hidden=true;readingText.after(realityNote);
   const readingSteps=[];
-  function showReading(i){readingIndex=i;const s=readingSteps[i];readingKicker.textContent=s[0];readingTitle.textContent=s[1];readingText.textContent=s[2];readingKicker.textContent=(TempleFlow.snapshot?.mode==='preset'?'预置案例演示 · ':'')+s[0];readingNext.textContent=i===readingSteps.length-1?'去菩提树下展开':'继续照见';readingDots.forEach((d,n)=>d.classList.toggle('on',n===i))}
+  function showReading(i){readingIndex=i;const s=readingSteps[i];readingKicker.textContent=s[0];readingTitle.textContent=s[1];readingText.textContent=s[2];document.querySelector('#readingRealityNote').hidden=i!==readingSteps.length-1;readingKicker.textContent=(TempleFlow.snapshot?.mode==='preset'?'预置案例演示 · ':'')+s[0];readingNext.textContent=i===readingSteps.length-1?'把这一句带回现实':'继续照见';readingDots.forEach((d,n)=>d.classList.toggle('on',n===i))}
   function revealSign(){if(state!=='signDrop')return;state='signReveal';lotSign.classList.add('flipped');setText('signReveal');lotSign.blur();later(()=>{if(state!=='signReveal')return;readingPanel.classList.add('show');showReading(0);state='signReading';dot(5)},1150)}
   function nextReading(){if(state!=='signReading')return;if(readingIndex<readingSteps.length-1){showReading(readingIndex+1);return}readingPanel.classList.remove('show');state='complete';if(window.parent!==window)window.parent.postMessage({type:'hall-complete'},location.origin);else location.href='../bodhi/index.html?from=daxiong-baodian'}
   function shakeByKeyboard(){if(['signHint','signPick'].includes(state)){state='shaking';setText('shaking');shakeDistance=300;startWaiting()}else if(state==='dropReady')dropSign()}
@@ -383,6 +384,7 @@
   videoBridge.addEventListener('wheel',e=>{if(state!=='videoBridge')return;e.preventDefault();e.stopPropagation();scrubBridge(e.deltaY)},{passive:false});
   window.addEventListener('wheel',wheel,{passive:false});window.addEventListener('keydown',e=>{if(e.key==='ArrowDown')wheel({preventDefault(){},deltaY:100});if(e.key==='ArrowUp')wheel({preventDefault(){},deltaY:-100});if(e.key==='Enter'&&state==='approach')arrive();if(e.key===' '&&state==='ready'){e.preventDefault();join()}if((e.key===' '||e.key==='ArrowLeft'||e.key==='ArrowRight')&&['signHint','signPick','dropReady'].includes(state)){e.preventDefault();shakeByKeyboard()}if(e.key==='Enter'&&state==='signDrop')revealSign()});
   let touchY=0;window.addEventListener('touchstart',e=>touchY=e.touches[0].clientY,{passive:true});window.addEventListener('touchmove',e=>{const y=e.touches[0].clientY,dy=touchY-y;if(Math.abs(dy)>12){wheel({preventDefault(){},deltaY:dy});touchY=y}},{passive:true});
+window.addEventListener('pagehide',()=>{bridgeVideo.pause();flowTimers.forEach(clearTimeout);cancelAnimationFrame(raf);});
   renderApproach();
   // Optional local preview starts at the completed receipt; normal entry keeps the full ritual.
   if(new URLSearchParams(location.search).get('preview')==='bodhi'){

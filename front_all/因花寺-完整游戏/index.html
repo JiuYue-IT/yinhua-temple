@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><script src="silence.js?v=block-output-2"></script><script>
+<head><script src="silence.js?v=allow-prologue-sfx-20261008"></script><script>
 if(location.protocol==='file:'){
  const guide='<!doctype html><meta charset="utf-8"><title>银花寺 · 启动</title><style>body{background:#e9eee5;color:#29473d;font:18px/2 sans-serif;max-width:650px;margin:15vh auto;padding:30px}h1{font-family:serif}</style><h1>银花寺 · S01–S15</h1><p>请先将压缩包全部解压，再双击同文件夹里的 <b>启动预览.cmd</b>。</p><p>游戏只有一个 index 入口，启动程序会自动打开完整流程。运行期间保留启动窗口。</p>';
  location.replace('data:text/html;charset=utf-8,'+encodeURIComponent(guide));
@@ -11,10 +11,10 @@ if(location.protocol==='file:'){
   <title>山门 · 入寺</title><script src="api.js"></script>
   <link rel="preload" as="image" href="assets/arrival.webp"><link rel="stylesheet" href="style.css?v=flower-logo-20261001"><link rel="stylesheet" href="hall.css?v=compact-kings">
   <script defer src="vendor/gsap.min.js"></script><script defer src="vendor/ScrollTrigger.min.js"></script><script defer src="hall.js?v=acrostic"></script><script defer src="main.js?v=no-audio-source-2"></script>
-</head>
+<link rel="stylesheet" href="experience-theme.css?v=20261006"><link rel="stylesheet" href="unified-navigation.css?v=1"></head>
 <body>
   <section id="prologue" class="prologue" aria-label="故事开场">
-    <div class="prologue-copy"><p>你是否也曾，在一个选择面前停留许久。</p><p>把未说出口的愿望，和来不及放下的遗憾，藏在心里。</p><p>山中有一座寺，名为因花寺。</p><p>循水而行，花影渐深。此刻，且随风入山。</p></div>
+    <div class="prologue-copy"><p>你是否也曾，<br>在选择面前停留许久</p><p>愿未说，念未放</p><p>山中有寺，<br>因念而花开</p><p>循水入山，<br>花影渐深</p></div>
     <button id="skipPrologue" type="button" aria-label="跳过序章，进入首页">跳过序章 <span aria-hidden="true">→</span></button>
   </section>
   <main id="journey" aria-label="山门殿入寺体验">
@@ -31,8 +31,8 @@ if(location.protocol==='file:'){
           <video id="opening" aria-hidden="true" muted playsinline preload="auto" poster="assets/knock-closed.webp"><source src="assets/knock-opening.webm" type="video/webm"></video>
           <img id="opened" src="assets/knock-open.webp" alt="" draggable="false">
           <div id="knockTargets" hidden>
-            <button class="knock-target knock-left" aria-label="轻叩左门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩</span></button>
-            <button class="knock-target knock-right" aria-label="轻叩右门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩</span></button>
+            <button class="knock-target knock-left" aria-label="轻叩左门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩。</span></button>
+            <button class="knock-target knock-right" aria-label="轻叩右门环，打开寺门" disabled><span class="knock-halo"></span><img class="knock-ring" src="assets/bronze-ring.png" alt=""><span class="knock-label">轻叩。</span></button>
           </div>
         </div>
         <div class="arrival" id="arrival"><img src="assets/hero-yinhua-clean.png" alt="因花寺粉色水院"><img id="heroTitleArt" src="assets/hero-yinhua.png" alt="因花寺"><canvas id="titleParticles" aria-hidden="true"></canvas><video id="hero" muted playsinline loop preload="auto" poster="assets/hero-yinhua.png" src="assets/hero.mp4"></video></div>
@@ -60,7 +60,7 @@ if(location.protocol==='file:'){
         <div class="choices"><button data-choice="lost"><span>我对前路有些迷茫</span></button><button data-choice="regret"><span>我对曾经的选择仍有遗憾</span></button></div>
         <p class="choice-hint">随此刻的心，选一念。</p>
       </section>
-      <button id="approach" class="scroll-cue"><span id="cueText">向前，慢慢走</span><span class="scroll-stroke" aria-hidden="true"></span></button>
+      <button id="approach" class="scroll-cue"><span id="cueText">向前，慢慢走。</span><span class="scroll-stroke" aria-hidden="true"></span></button>
       <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
       <div class="completion" id="completion" hidden><p id="ending" tabindex="-1">先把心事，交给这一阵风。</p><button id="replay">再走一次</button></div>
       <div id="notice" class="notice" role="status"></div>
@@ -68,7 +68,9 @@ if(location.protocol==='file:'){
     </div>
   </main>
   <div id="handCursor" aria-hidden="true"><img src="assets/hand-point.webp" alt=""><img class="hand-fist" src="assets/hand-knock.webp" alt=""></div>
-  <script defer src="continuation.js?v=bodhi-music"></script><script defer src="temple-map.js?v=hover-transition"></script><script defer src="courtyard-passage.js?v=refined-20261001"></script><script defer src="mouse-guides.js"></script>
+  <script defer src="continuation.js?v=bodhi-music"></script><script defer src="temple-map.js?v=hover-transition"></script><script defer src="courtyard-passage.js?v=wheel-icon-2"></script><script defer src="mouse-guides.js?v=wheel-dismiss"></script>
   <noscript><p class="no-js">请启用 JavaScript，体验滚动入寺与开门动画。</p></noscript>
-<script defer src="unified-cursor.js?v=2"></script></body>
+<script defer src="prologue-sfx.js?v=2"></script><script defer src="prologue-particles.js?v=5"></script><script defer src="unified-cursor.js?v=20261006"></script><script defer src="scene-music.js?v=direct-start-20261008-3"></script><script defer src="unified-navigation.js?v=2"></script><script defer src="adaptive-contrast.js?v=1"></script><script defer src="official-story-copy.js?v=1"></script></body>
 </html>
+
+

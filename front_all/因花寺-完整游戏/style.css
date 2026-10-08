@@ -97,3 +97,5 @@
 /* Flower temple emblem replaces the chapter seal, including later chapters. */
 .chapter .seal{background:transparent url('assets/flower-logo.png') center/contain no-repeat;border:0;width:38px;height:38px;font-size:0;color:transparent;letter-spacing:0;flex-shrink:0}
 @media(max-width:650px){.chapter .seal{width:32px;height:32px}}
+
+.prologue.particle-intro .prologue-copy p{animation:none;display:block;padding:20px;opacity:0}.prologue-particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}

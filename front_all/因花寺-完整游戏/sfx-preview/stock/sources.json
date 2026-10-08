@@ -1,0 +1,34 @@
+[
+  {
+    "label": "叩门 · 厚木门",
+    "title": "Knocking on a thick wooden door",
+    "id": 197,
+    "source": "https://mixkit.co/free-sound-effects/discover/door/",
+    "audio": "mixkit-197.mp3",
+    "status": "local"
+  },
+  {
+    "label": "文字浮现 · 纸张滑动",
+    "title": "Paper slide",
+    "id": 1530,
+    "source": "https://mixkit.co/free-sound-effects/paper/",
+    "audio": "mixkit-1530.mp3",
+    "status": "local"
+  },
+  {
+    "label": "签文展开 · 单次翻页",
+    "title": "Page turn single",
+    "id": 1104,
+    "source": "https://mixkit.co/free-sound-effects/paper/",
+    "audio": "mixkit-1104.mp3",
+    "status": "local"
+  },
+  {
+    "label": "写愿 · 铅笔书写",
+    "title": "Writing pencil",
+    "id": 2653,
+    "source": "https://mixkit.co/free-sound-effects/paper/",
+    "audio": "mixkit-2653.mp3",
+    "status": "local"
+  }
+]
