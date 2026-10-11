@@ -43,3 +43,5 @@ body{overflow:hidden}
 .bowl-light{left:26%;top:63%;width:48%;height:10%}
 @media(max-aspect-ratio:1/1){.burner-layer,.burner-front{left:37.76%;top:29.34%;width:24.47%;height:57.16%}}
 .courtyard-paving{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+.final-smoke-cloud{filter:none}.final-smoke-threads{display:none}.final-smoke-drift{animation:none}

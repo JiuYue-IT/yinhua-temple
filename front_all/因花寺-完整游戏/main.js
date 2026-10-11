@@ -44,7 +44,7 @@ const scrollTimeline = gsap.timeline({paused:true,defaults:{ease:'none'}})
 const trigger = ScrollTrigger.create({trigger:'#journey',start:'top top',end:'bottom bottom',animation:scrollTimeline,scrub:reduced ? true : .75,onUpdate(self){
   $('#progressFill').style.transform=`scaleX(${self.progress})`;
   requestAnimationFrame(()=>renderTitleParticles(self.progress));
-  $('#cueText').textContent=self.progress > .85 ? '带着此刻的心，叩门' : '向前，慢慢走';
+  $('#cueText').textContent=self.progress > .85 ? '带着此刻的心，叩门' : '向前，慢慢走。';
 }});
 
 // Sample original ink strokes so scattered fragments follow the supplied lettering.
@@ -108,14 +108,7 @@ knockButtons.forEach(button=>{
 });
 const hand = $('#handCursor');
 const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
-document.addEventListener('pointermove',event=>{
-  if(!finePointer.matches || event.pointerType==='touch')return;
-  document.body.classList.add('hand-cursor');
-  hand.style.left=`${event.clientX}px`;hand.style.top=`${event.clientY}px`;
-});
-document.documentElement.addEventListener('pointerleave',()=>document.body.classList.remove('hand-cursor'));
-document.addEventListener('keydown',event=>{if(event.key==='Tab')document.body.classList.remove('hand-cursor');});
-finePointer.addEventListener('change',()=>{if(!finePointer.matches)document.body.classList.remove('hand-cursor');});
+// Pointer rendering belongs to TempleCursor; keep the ritual hand separate.
 
 function knockSound(){
   if(!audio || !soundOn)return;
@@ -218,8 +211,10 @@ function choose(choice){
     waitForKnock();
   });
 }
+let openingWatchdog;
 function startOpening(){
-  bell(.28);finish();
+ if(state!=='knocking')return;
+ state='opening';bell(.28);finish();
 }
 function showFallback(){
   $('#notice').textContent='开门影像暂不可播放，已为你打开山门。';finish();
@@ -227,14 +222,15 @@ function showFallback(){
 opening.addEventListener('ended',finish);
 opening.addEventListener('error',()=>{if(state==='opening')showFallback();});
 function finish(){
-  if(state==='hall' || state==='finished')return;
+  clearTimeout(openingWatchdog);
+  if(!['opening','knocking'].includes(state))return;
   window.dispatchEvent(new CustomEvent('temple-stage',{detail:2}));state='hall';opening.pause();document.body.classList.add('finished');
     gsap.set('#opened',{opacity:1});gsap.set([opening,'#closed','#videoGate'],{opacity:0});
   document.body.classList.remove('opening');
   startHallExperience({reduced, chime:()=>bell(.12)});
 }
 $('#replay').addEventListener('click',()=>{
-  resetHallExperience();
+  resetHallExperience();clearTimeout(openingWatchdog);window.CourtyardPassage?.stop();
   approachTween?.kill();opening.pause();opening.currentTime=0;
   gsap.killTweensOf(['#completion','#question','#approach',opening,'#closed']);
     gsap.killTweensOf('#videoGate');
@@ -246,7 +242,7 @@ $('#replay').addEventListener('click',()=>{
   document.querySelectorAll('[data-choice]').forEach(b=>{b.disabled=false;b.classList.remove('selected','unselected');});
   scrollTo(0,0);trigger.enable();ScrollTrigger.refresh();scrollTimeline.progress(0);
   gsap.set(['#question','#approach'],{autoAlpha:1});
-  $('#cueText').textContent='向前，慢慢走';$('#progressFill').style.transform='scaleX(0)';
+  $('#cueText').textContent='向前，慢慢走。';$('#progressFill').style.transform='scaleX(0)';
   $('#approach').focus({preventScroll:true});
 });
 window.addEventListener('load',()=>{scrollTo(0,0);ScrollTrigger.refresh();scrollTimeline.progress(0);});
@@ -257,9 +253,9 @@ window.templeAudio=()=>({context:audio,master,enabled:soundOn});
 window.templeNavigate=place=>{
  window.closeContinuation?.();skipPrologueNow();$('#replay').click();
  if(place==='home'){window.dispatchEvent(new CustomEvent('temple-stage',{detail:0}));return;}
- scrollTo(0,trigger.end);trigger.update();scrollTimeline.progress(1);trigger.getTween()?.progress(1);renderTitleParticles(1);
+ scrollTo(0,trigger.end);trigger.update();scrollTimeline.progress(1);renderTitleParticles(1);
  if(place==='gate'){gsap.set('#question',{autoAlpha:1});window.dispatchEvent(new CustomEvent('temple-stage',{detail:1}));return;}
- trigger.disable(false);document.body.style.overflow='hidden';finish();
+ trigger.disable(false);document.body.style.overflow='hidden';state='opening';finish();
 };
 
 let mapGateAnnounced=false;window.addEventListener('scroll',()=>{if(state==='arrival'&&trigger.progress>.65&&!mapGateAnnounced){mapGateAnnounced=true;window.dispatchEvent(new CustomEvent('temple-stage',{detail:1}));}},{passive:true});
